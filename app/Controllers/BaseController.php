@@ -15,6 +15,7 @@ namespace App\Controllers;
  */
 
 use CodeIgniter\Controller;
+use CodeIgniter\Events\Events;
 
 class BaseController extends Controller
 {
@@ -41,7 +42,84 @@ class BaseController extends Controller
 		//--------------------------------------------------------------------
 		// E.g.:
 		$this->session = \Config\Services::session();
-		
+
+	}
+
+	public function useSelect2($elements){
+		Events::on('add_more_style', function() {
+				echo '
+					<!-- Select2 -->
+					<link rel="stylesheet" href="'.base_url().'/assets/theme/adminlte/plugins/select2/css/select2.min.css">
+					<link rel="stylesheet" href="'.base_url().'/assets/theme/adminlte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">';
+		});
+		Events::on('add_more_js', function() {
+				echo '
+				<!-- Select2 -->
+				<script src="'.base_url().'/assets/theme/adminlte/plugins/select2/js/select2.full.min.js"></script>';
+		});
+		if(is_array($elements)&&!empty($elements)){
+			foreach ($elements as $element) {
+				Events::on('custom_script', function() use($element){
+						echo '<script>
+						$(function () {
+							$(".'.$element.'").select2();
+						});
+						</script>';
+				});
+			}
+		} elseif(is_string($elements)){
+			Events::on('custom_script', function() use($elements){
+					echo '<script>
+					$(function () {
+						$(".'.$elements.'").select2();
+					});
+					</script>';
+			});
+		}
+
+	}
+
+	public function useDataTables($elements){
+		Events::on('add_more_style', function() {
+				echo '
+				<!-- DataTables -->
+				<link rel="stylesheet" href="'.base_url().'/assets/theme/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+				<link rel="stylesheet" href="'.base_url().'/assets/theme/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">';
+		});
+		Events::on('add_more_js', function() {
+				echo '
+				<!-- DataTables -->
+				<script src="'.base_url().'/assets/theme/adminlte/plugins/datatables/jquery.dataTables.min.js"></script>
+				<script src="'.base_url().'/assets/theme/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+				<script src="'.base_url().'/assets/theme/adminlte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+				<script src="'.base_url().'/assets/theme/adminlte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>';
+		});
+
+		if(is_array($elements)&&!empty($elements)){
+			foreach ($elements as $element) {
+				Events::on('custom_script', function() use($element){
+						echo '<script>
+						$(function () {
+							$("#'.$element.'").DataTable({
+								"autoWidth": false,
+								"responsive": true,
+							});
+						});
+						</script>';
+				});
+			}
+		} elseif(is_string($elements)){
+			Events::on('custom_script', function() use($elements) {
+					echo '<script>
+					$(function () {
+						$("#'.$elements.'").DataTable({
+							"autoWidth": false,
+							"responsive": true,
+						});
+					});
+					</script>';
+			});
+		}
 	}
 
 }

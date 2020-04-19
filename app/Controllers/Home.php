@@ -1,19 +1,18 @@
 <?php namespace App\Controllers;
 
-class Home extends BaseController
+class Home extends IonAuthController
 {
 	public function index()
 	{
-		if (!$this->session->get('username')) {
-			return redirect()->to('/login'); 
-		}
-		echo view('admin/include/header');
-		echo view('admin/include/navbar');
-		echo view('admin/include/sidebar');
-		echo view('admin/index');
-		echo view('admin/include/footer');
+		return redirect()->to('/home/timeline');
 	}
 
-	//--------------------------------------------------------------------
+	public function timeline(){
+		echo view('admin/include/header');
+		echo view('admin/include/navbar');
+		echo view('admin/include/sidebar', $this->data);
+		echo view('admin/timeline', $this->data);
+		echo view('admin/include/footer');
+	}
 
 }

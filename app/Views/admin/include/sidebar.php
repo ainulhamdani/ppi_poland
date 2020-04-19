@@ -18,7 +18,7 @@
           <img src="<?php echo base_url()?>/assets/theme/adminlte/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Admin</a>
+          <a href="#" class="d-block"><?php echo $username; ?></a>
         </div>
       </div>
 
@@ -28,13 +28,13 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="#" class="nav-link <?php echo uri_string()=='/'?'active':'' ?>">
-              <i class="nav-icon fas fa-th"></i>
+            <a href="/home/timeline" class="nav-link <?php echo $urls[1]=='timeline'?'active':'' ?>">
+              <i class="nav-icon fas fa-calendar-alt"></i>
               <p>
-                Overview
+                Timeline
               </p>
             </a>
-          </li
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

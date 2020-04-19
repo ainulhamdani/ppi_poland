@@ -32,5 +32,11 @@
 <script src="<?php echo base_url()?>/assets/theme/adminlte/js/pages/dashboard.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="<?php echo base_url()?>/assets/theme/adminlte/js/demo.js"></script>
+
+<?php \CodeIgniter\Events\Events::trigger('add_more_js'); ?>
+
+<?php \CodeIgniter\Events\Events::trigger('custom_script'); ?>
+
+
 </body>
 </html>
