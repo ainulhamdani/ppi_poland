@@ -35,7 +35,7 @@ class Filters extends BaseConfig
 	// that they should run on, like:
 	//    'isLoggedIn' => ['before' => ['account/*', 'profiles/*']],
 	public $filters = [
-		'ionAuth' => ['before' => ['home/*', 'admin/*', 'profiles/*']],
+		'ionAuth' => ['before' => ['home/*', 'admin/*', 'profile/*']],
 		'ionAdmin' => ['before' => ['admin/*']],
 	];
 }
