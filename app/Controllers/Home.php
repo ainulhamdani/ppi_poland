@@ -29,7 +29,50 @@ class Home extends IonAuthController
 		echo view('admin/include/header');
 		echo view('admin/include/navbar');
 		echo view('admin/include/sidebar', $this->data);
-		echo view('admin/timeline', $this->data);
+		echo view('admin/home/timeline', $this->data);
+		echo view('admin/include/footer');
+	}
+
+	public function user($id=0){
+		if ($id==0) {
+			$id = $this->ionAuth->getUserId();
+		}
+
+		$postModel = model('App\Models\PostModel');
+		$postLikesModel = model('App\Models\PostLikesModel');
+		$postAttachmentModel = model('App\Models\PostAttachmentModel');
+		$postCommentModel = model('App\Models\PostCommentModel');
+
+		$studentModel = model('App\Models\StudentModel');
+    $userModel = model('App\Models\UserModel');
+    $universityModel = model('App\Models\UniversityModel');
+    $studentStatusModel = model('App\Models\StudentStatusModel');
+
+		$this->data['student'] = $studentModel
+		->withSelect(['student.*','users.fullname','users.nickname','users.email','student_photo.name as photo','university.name as university_name','student_status.description as student_status'])
+		->withJoin('users','id','user_id')
+		->withJoin('university','id','university_id')
+		->withJoin('student_status','id','student_status_id')
+		->withJoin('student_photo','user_id','user_id')
+		->withWhere('student.user_id',$id)
+		->first();
+		
+
+		$this->data['posts'] = $postModel
+				->withSelect(['post.*','users.fullname','student_photo.name as photo','post_comment.comment_count','post_likes.likes_count','post_attachment.attach_count','post_attachment.attachment'])
+				->withJoin('users','id','user_id')
+				->withJoin('student_photo','user_id','user_id')
+				->withCustomJoin('(SELECT post_id, count(id) as comment_count FROM post_comment GROUP BY post_id) as post_comment','post_comment','post_id','id')
+				->withCustomJoin('(SELECT post_id, count(id) as likes_count FROM post_likes GROUP BY post_id) as post_likes','post_likes','post_id','id')
+				->withCustomJoin("(SELECT post_id, count(id) as attach_count, GROUP_CONCAT(name SEPARATOR ',') as attachment FROM post_attachment GROUP BY post_id) as post_attachment",'post_attachment','post_id','id')
+				->withWhere('post.user_id',$id)
+				->withOrderBy('created_at','DESC')
+				->findAll(10);
+
+		echo view('admin/include/header');
+		echo view('admin/include/navbar');
+		echo view('admin/include/sidebar', $this->data);
+		echo view('admin/home/profile', $this->data);
 		echo view('admin/include/footer');
 	}
 
