@@ -22,6 +22,14 @@ class BaseModel extends Model
     return $this;
   }
 
+  public function withOrderBy($column, $orderType='ASC'){
+
+    $this->builder()
+			 ->orderBy($column, $orderType);
+
+    return $this;
+  }
+
   public function withJoin($joinTable, $targetColumn, $sourceColumn, $joinType='LEFT'){
 
     $this->builder()
@@ -29,5 +37,28 @@ class BaseModel extends Model
 
     return $this;
   }
-  
+
+  public function withCustomJoin($query, $joinTable, $targetColumn, $sourceColumn, $joinType='LEFT'){
+
+    $this->builder()
+			 ->join($query, $this->table.'.'.$sourceColumn.' = '.$joinTable.'.'.$targetColumn, $joinType);
+
+    return $this;
+  }
+
+  public function withWhere($column, $values){
+
+    if (is_array($values)&&!empty($values)) {
+      $this->builder()
+         ->whereIn($column, $values);
+    }
+		elseif (is_numeric($values) || is_string($values))
+		{
+      $this->builder()
+  			 ->where($column, $values);
+		}
+
+    return $this;
+  }
+
 }

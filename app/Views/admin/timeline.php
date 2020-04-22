@@ -25,110 +25,68 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-body">
-                <!-- Post -->
-                <div class="post">
-                  <div class="user-block">
-                    <img class="img-circle img-bordered-sm" src="<?php echo base_url()?>/assets/theme/adminlte/img/user1-128x128.jpg" alt="user image">
-                    <span class="username">
-                      <a href="#">Jonathan Burke Jr.</a>
-                      <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
-                    </span>
-                    <span class="description">Shared publicly - 7:30 PM today</span>
-                  </div>
-                  <!-- /.user-block -->
-                  <p>
-                    Lorem ipsum represents a long-held tradition for designers,
-                    typographers and the like. Some people hate it and argue for
-                    its demise, but others ignore the hate as they create awesome
-                    tools to help create filler text for everyone from bacon lovers
-                    to Charlie Sheen fans.
-                  </p>
-
-                  <p>
-                    <a href="#" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Share</a>
-                    <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a>
-                    <span class="float-right">
-                      <a href="#" class="link-black text-sm">
-                        <i class="far fa-comments mr-1"></i> Comments (5)
-                      </a>
-                    </span>
-                  </p>
-
-                  <input class="form-control form-control-sm" type="text" placeholder="Type a comment">
-                </div>
-                <!-- /.post -->
-
-                <!-- Post -->
-                <div class="post clearfix">
-                  <div class="user-block">
-                    <img class="img-circle img-bordered-sm" src="<?php echo base_url()?>/assets/theme/adminlte/img/user7-128x128.jpg" alt="User Image">
-                    <span class="username">
-                      <a href="#">Sarah Ross</a>
-                      <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
-                    </span>
-                    <span class="description">Sent you a message - 3 days ago</span>
-                  </div>
-                  <!-- /.user-block -->
-                  <p>
-                    Lorem ipsum represents a long-held tradition for designers,
-                    typographers and the like. Some people hate it and argue for
-                    its demise, but others ignore the hate as they create awesome
-                    tools to help create filler text for everyone from bacon lovers
-                    to Charlie Sheen fans.
-                  </p>
-
-                  <form class="form-horizontal">
-                    <div class="input-group input-group-sm mb-0">
-                      <input class="form-control form-control-sm" placeholder="Response">
-                      <div class="input-group-append">
-                        <button type="submit" class="btn btn-danger">Send</button>
+                <form id="post_form" action="/home/add_post" method="post" enctype="multipart/form-data">
+                  <div class="">
+                    <textarea id="content" class="form-control" name="content" rows="2" placeholder="Share your thoughts ..."></textarea>
+                    <div id="dropzone"  class="dropzone">
+                      <div class="fallback">
+                        <input id="photofile" class="custom-file-input" name="post_photo" type="file" multiple accept="image/x-png, image/jpeg" />
+                        <label class="custom-file-label" for="photofile">Choose photo</label>
                       </div>
                     </div>
-                  </form>
-                </div>
-                <!-- /.post -->
-
+                    <button id="add_photo" class="btn btn-block btn-secondary">Add Photo</button>
+                    <button id="add_cancel" class="btn btn-block btn-danger">Cancel</button>
+                    <button type="submit" id="submit_button" class="btn btn-block btn-primary">Submit</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <!-- /.col -->
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <!-- <?php var_dump($posts); ?> -->
+                <?php foreach($posts as $post): ?>
                 <!-- Post -->
                 <div class="post">
                   <div class="user-block">
-                    <img class="img-circle img-bordered-sm" src="<?php echo base_url()?>/assets/theme/adminlte/img/user6-128x128.jpg" alt="User Image">
+                    <?php if ($post['photo']) { ?>
+                      <img class="img-circle img-bordered-sm" src="<?php echo base_url().'/assets/uploads/profile_pictures/'.$post['photo']?>" alt="" style="object-fit: cover;">
+                    <?php } else { ?>
+                      <img class="img-circle img-bordered-sm" src="<?php echo base_url()?>/assets/theme/adminlte/img/avatar.png" alt="user image">
+                    <?php } ?>
                     <span class="username">
-                      <a href="#">Adam Jones</a>
-                      <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                      <a href="/home/user/<?php echo $post['id'] ?>"><?php echo $post['fullname'] ?></a>
                     </span>
-                    <span class="description">Posted 5 photos - 5 days ago</span>
+                    <span class="description"><?php echo $post['created_at'] ?></span>
                   </div>
                   <!-- /.user-block -->
+
+                  <?php if($post['attach_count']): ?>
                   <div class="row mb-3">
+                    <?php
+                    $attachments = explode(',',$post['attachment']);
+                    foreach($attachments as $attachment):
+                    ?>
                     <div class="col-sm-6">
-                      <img class="img-fluid" src="<?php echo base_url()?>/assets/theme/adminlte/img/photo1.png" alt="Photo">
+                      <img class="img-fluid mb-3" src="<?php echo base_url()?>/assets/uploads/posts/<?php echo $post['user_id'] ?>/<?php echo $attachment?>" alt="Photo">
                     </div>
-                    <!-- /.col -->
-                    <div class="col-sm-6">
-                      <div class="row">
-                        <div class="col-sm-6">
-                          <img class="img-fluid mb-3" src="<?php echo base_url()?>/assets/theme/adminlte/img/photo2.png" alt="Photo">
-                          <img class="img-fluid" src="<?php echo base_url()?>/assets/theme/adminlte/img/photo3.jpg" alt="Photo">
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-sm-6">
-                          <img class="img-fluid mb-3" src="<?php echo base_url()?>/assets/theme/adminlte/img/photo4.jpg" alt="Photo">
-                          <img class="img-fluid" src="<?php echo base_url()?>/assets/theme/adminlte/img/photo1.png" alt="Photo">
-                        </div>
-                        <!-- /.col -->
-                      </div>
-                      <!-- /.row -->
-                    </div>
-                    <!-- /.col -->
+                    <?php endforeach; ?>
                   </div>
-                  <!-- /.row -->
+                <?php endif; ?>
 
                   <p>
-                    <a href="#" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Share</a>
-                    <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a>
+                    <?php echo $post['content'] ?>
+                  </p>
+
+                  <p>
+                    <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a> <?php echo $post['likes_count']?' - '.$post['likes_count'].' people like this':'' ?>
                     <span class="float-right">
                       <a href="#" class="link-black text-sm">
-                        <i class="far fa-comments mr-1"></i> Comments (5)
+                        <i class="far fa-comments mr-1"></i> Comments (<?php echo $post['comment_count']?$post['comment_count']:'0' ?>)
                       </a>
                     </span>
                   </p>
@@ -136,7 +94,8 @@
                   <input class="form-control form-control-sm" type="text" placeholder="Type a comment">
                 </div>
                 <!-- /.post -->
-                <!-- /.tab-content -->
+              <?php endforeach; ?>
+
               </div><!-- /.card-body -->
             </div>
             <!-- /.nav-tabs-custom -->
@@ -149,3 +108,79 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+  <?php \CodeIgniter\Events\Events::on('custom_script', function() { ?>
+    <script type='text/javascript'>
+      var i = 1;
+      var dropzoneDisabled = true;
+      Dropzone.options.dropzone = {
+        addRemoveLinks: true,
+        dictDefaultMessage: 'Click to choose or drop your image',
+        uploadMultiple: true,
+        resizeQuality: 0.5,
+        maxFiles: 5,
+        acceptedFiles: 'image/png, image/jpeg',
+        url: "/home/add_post",
+        autoProcessQueue: false,
+        paramName: "post_photo",
+        maxFilesize: 10,
+        init: function () {
+          let myDropzone = this;
+
+          // Update selector to match your button
+          $("#submit_button").click(function (e) {
+            e.preventDefault();
+            let content = $.trim($("#content").val())
+            if (!dropzoneDisabled) {
+              myDropzone.processQueue();
+            } else {
+              if (content!='') {
+                $.post( "/home/add_post", { content: content })
+                  .done(function( data ) {
+                    $("#content").val('');
+                    console.log( "Data Loaded: " + data );
+                    location.reload();
+                })
+              }
+            }
+          });
+
+          $("#add_photo").click(function (e) {
+            e.preventDefault();
+            dropzoneDisabled = false;
+            myDropzone.enable();
+            $("#dropzone").show();
+            $("#add_cancel").show();
+            $(this).hide();
+          });
+
+          $("#add_cancel").click(function (e) {
+            e.preventDefault();
+            dropzoneDisabled = true;
+            myDropzone.disable();
+            $("#dropzone").hide();
+            $("#add_photo").show();
+            $(this).hide();
+          });
+
+          this.on('sending', function(file, xhr, formData) {
+            // Append all form inputs to the formData Dropzone will POST
+            var data = $('#post_form').serializeArray();
+            $.each(data, function(key, el) {
+                formData.append(el.name, el.value);
+          });
+
+          this.on('success', function(e, data) {
+            // this.removeAllFiles();
+            console.log( i + ". Data Loaded: " );
+            i = i+1;
+            location.reload();
+          });
+        });
+        },
+      };
+      var myDropzone = new Dropzone("#dropzone", (Dropzone.options.dropzone));
+      myDropzone.disable();
+      $("#dropzone").hide();
+      $("#add_cancel").hide();
+    </script>
+  <?php });?>

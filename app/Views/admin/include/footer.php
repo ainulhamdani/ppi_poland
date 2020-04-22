@@ -12,9 +12,6 @@
 <script src="<?php echo base_url()?>/assets/theme/adminlte/plugins/chart.js/Chart.min.js"></script>
 <!-- Sparkline -->
 <script src="<?php echo base_url()?>/assets/theme/adminlte/plugins/sparklines/sparkline.js"></script>
-<!-- JQVMap -->
-<script src="<?php echo base_url()?>/assets/theme/adminlte/plugins/jqvmap/jquery.vmap.min.js"></script>
-<script src="<?php echo base_url()?>/assets/theme/adminlte/plugins/jqvmap/maps/jquery.vmap.poland.js"></script>
 <!-- jQuery Knob Chart -->
 <script src="<?php echo base_url()?>/assets/theme/adminlte/plugins/jquery-knob/jquery.knob.min.js"></script>
 <!-- daterangepicker -->
@@ -29,9 +26,9 @@
 <!-- AdminLTE App -->
 <script src="<?php echo base_url()?>/assets/theme/adminlte/js/adminlte.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="<?php echo base_url()?>/assets/theme/adminlte/js/pages/dashboard.js"></script>
+<!-- <script src="<?php echo base_url()?>/assets/theme/adminlte/js/pages/dashboard.js"></script> -->
 <!-- AdminLTE for demo purposes -->
-<script src="<?php echo base_url()?>/assets/theme/adminlte/js/demo.js"></script>
+<!-- <script src="<?php echo base_url()?>/assets/theme/adminlte/js/demo.js"></script> -->
 
 <?php \CodeIgniter\Events\Events::trigger('add_more_js'); ?>
 

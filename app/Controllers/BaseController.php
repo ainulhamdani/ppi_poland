@@ -122,4 +122,40 @@ class BaseController extends Controller
 		}
 	}
 
+	public function useDropzone(){
+		Events::on('add_more_style', function() {
+				echo '
+				<!-- Dropzone -->
+				<link rel="stylesheet" href="'.base_url().'/assets/css/dropzone.min.css">';
+		});
+		Events::on('add_more_js', function() {
+				echo '
+				<!-- Dropzone -->
+				<script src="'.base_url().'/assets/js/dropzone.min.js"></script>
+				<script>Dropzone.autoDiscover = false;</script>';
+		});
+	}
+
+	public function useJQVMap(){
+		Events::on('add_more_style', function() {
+				echo '
+				<!-- JQVMap -->
+				<link rel="stylesheet" href="'.base_url().'/assets/theme/adminlte/plugins/jqvmap/jqvmap.min.css">';
+		});
+		Events::on('add_more_js', function() {
+				echo '
+				<!-- JQVMap -->
+				<script src="'.base_url().'/assets/theme/adminlte/plugins/jqvmap/jquery.vmap.min.js"></script>
+				<script src="'.base_url().'/assets/theme/adminlte/plugins/jqvmap/maps/jquery.vmap.poland.js"></script>';
+		});
+	}
+
+	public function useImageCompressor(){
+		Events::on('add_more_js', function() {
+				echo '
+				<!-- Image Compressor -->
+				<script src="'.base_url().'/assets/js/image-compressor/image-compressor.min.js"></script>';
+		});
+	}
+
 }

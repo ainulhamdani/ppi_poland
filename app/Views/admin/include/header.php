@@ -31,8 +31,6 @@
   <link rel="stylesheet" href="<?php echo base_url()?>/assets/theme/adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
   <!-- iCheck -->
   <link rel="stylesheet" href="<?php echo base_url()?>/assets/theme/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="<?php echo base_url()?>/assets/theme/adminlte/plugins/jqvmap/jqvmap.min.css">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="<?php echo base_url()?>/assets/theme/adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
   <!-- Daterange picker -->
@@ -45,7 +43,7 @@
   <?php \CodeIgniter\Events\Events::trigger('add_more_style'); ?>
 
   <?php \CodeIgniter\Events\Events::trigger('custom_style'); ?>
-  
+
   <!-- Theme style -->
   <link rel="stylesheet" href="<?php echo base_url()?>/assets/theme/adminlte/css/adminlte.min.css">
 </head>

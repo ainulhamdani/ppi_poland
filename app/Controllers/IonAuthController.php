@@ -75,9 +75,12 @@ class IonAuthController extends BaseController
 		}
 
 		if ($this->ionAuth->loggedIn()) {
+			$photoModel = model('App\Models\StudentPhotoModel');
 			$this->data['username'] = $this->session->get('nickname');
 			$this->data['fullname'] = $this->session->get('fullname');
+			$this->data['user_id'] = $this->ionAuth->getUserId();
 			$this->data['is_admin'] = $this->ionAuth->isAdmin($this->ionAuth->getUserId());
+			$this->data['photo'] = $photoModel->withWhere('user_id',$this->ionAuth->getUserId())->first();
 		}
 	}
 }
