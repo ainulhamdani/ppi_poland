@@ -29,7 +29,7 @@
               <div class="card-body box-profile">
                 <div class="text-center">
                   <?php if ($student['photo']) { ?>
-                    <img id="photo" src="<?php echo base_url().'/assets/uploads/profile_pictures/'.$student['photo']?>" alt="User profile picture" class="profile-user-img img-fluid img-circle">
+                    <img id="photo" src="<?php echo base_url().'/assets/uploads/profile_pictures/'.$student['photo']?>" alt="User profile picture" class="img-fluid">
                   <?php } else { ?>
                     <img class="profile-user-img img-fluid img-circle"
                          src="<?php echo base_url()?>/assets/theme/adminlte/img/avatar.png"
