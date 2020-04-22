@@ -118,6 +118,7 @@
         uploadMultiple: true,
         resizeQuality: 0.5,
         maxFiles: 5,
+        parallelUploads: 5,
         acceptedFiles: 'image/png, image/jpeg',
         url: "/home/add_post",
         autoProcessQueue: false,
