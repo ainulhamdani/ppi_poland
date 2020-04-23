@@ -9,6 +9,6 @@
       <?php } ?>
     </div>
     <div class="info">
-      <a href="#" class="d-block"><?php echo $username; ?></a>
+      <a href="/home/user/<?php echo $user_id; ?>" class="d-block"><?php echo $username; ?></a>
     </div>
   </div>

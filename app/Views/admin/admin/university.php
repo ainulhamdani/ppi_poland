@@ -48,6 +48,7 @@
                   <td><?php echo $university['region'] ?></td>
                   <td><?php echo $university['latlang'] ?></td>
                   <td><a href="/admin/university/edit/<?php echo $university['id'] ?>" type="button" class="btn-sm btn-block btn-warning">Edit</a></td>
+                  <td><a href="/admin/university/delete/<?php echo $university['id'] ?>" type="button" class="btn-sm btn-block btn-danger" data-name="<?php echo $university['name'] ?>" data-id="<?php echo $university['id'] ?>" data-toggle="modal" data-target="#modal-delete">Del</a></td>
                 </tr>
               <?php endforeach; ?>
                 </tbody>
@@ -74,3 +75,51 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+
+  <div class="modal fade" id="modal-delete">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-danger">
+        <div class="modal-header">
+          <h4 class="modal-title">Delete University?</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="_name"></p>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-outline-light" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-outline-light" id="go_delete">Delete</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <?php \CodeIgniter\Events\Events::on('custom_script', function() { ?>
+  <script>
+    $('#modal-delete').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget)
+      var id = button.data('id')
+      var name = button.data('name')
+      var url = button.attr('href');
+
+      var modal = $(this)
+      modal.find('#_name').text(name)
+
+      $('#go_delete').click(function() {
+        $.post( url, { <?php echo csrf_token();?>: "<?php echo csrf_hash();?>"})
+        .done(function( data ) {
+          if (data=='success') {
+            window.location = "/admin/university";
+          }
+        })
+      })
+    });
+
+
+  </script>
+  <?php });?>

@@ -66,6 +66,7 @@ class IonAuthController extends BaseController
 		//--------------------------------------------------------------------
 		// E.g.:
     $this->ionAuth    = new \IonAuth\Libraries\IonAuth();
+    $this->security    = \Config\Services::security();
     helper(['form', 'url']);
     $this->configIonAuth = config('IonAuth');
 

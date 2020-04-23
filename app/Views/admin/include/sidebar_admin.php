@@ -22,55 +22,45 @@ $urls = explode('/',uri_string());
              </p>
            </a>
          </li>
-         <li class="nav-item has-treeview <?php echo $urls[1]=='university'?'menu-open':'' ?>">
+         <li class="nav-item">
            <a href="/admin/university" class="nav-link <?php echo $urls[1]=='university'?'active':'' ?>">
              <i class="nav-icon fas fa-university"></i>
              <p>
                University
-               <i class="right fas fa-angle-left"></i>
              </p>
            </a>
-           <ul class="nav nav-treeview">
-             <li class="nav-item">
-               <a href="/admin/university" class="nav-link <?php echo $urls[1]=='university'&&!isset($urls[2])?'active':'' ?>">
-                 <i class="fas fa-list nav-icon"></i>
-                 <p>University List</p>
-               </a>
-             </li>
-             <li class="nav-item">
-               <a href="/admin/university/add" class="nav-link <?php echo $urls[1]=='university'&&isset($urls[2])?($urls[2]=='add'?'active':''):'' ?>">
-                 <i class="fas fa-plus nav-icon"></i>
-                 <p>
-                   Add New University
-                 </p>
-               </a>
-             </li>
-           </ul>
          </li>
-         <li class="nav-item has-treeview <?php echo $urls[1]=='student'?'menu-open':'' ?>">
+         <li class="nav-item">
            <a href="/admin/student" class="nav-link <?php echo $urls[1]=='student'?'active':'' ?>">
              <i class="nav-icon fas fa-users"></i>
              <p>
                Student
-               <i class="right fas fa-angle-left"></i>
              </p>
            </a>
-           <ul class="nav nav-treeview">
-             <li class="nav-item">
-               <a href="/admin/student" class="nav-link <?php echo $urls[1]=='student'&&!isset($urls[2])?'active':'' ?>">
-                 <i class="fas fa-list nav-icon"></i>
-                 <p>Student List</p>
-               </a>
-             </li>
-             <li class="nav-item">
-               <a href="/admin/student/add" class="nav-link <?php echo $urls[1]=='student'&&isset($urls[2])?($urls[2]=='add'?'active':''):'' ?>">
-                 <i class="fas fa-plus nav-icon"></i>
-                 <p>
-                   Add New Student
-                 </p>
-               </a>
-             </li>
-           </ul>
+         </li>
+         <li class="nav-item">
+           <a href="/admin/kepengurusan" class="nav-link <?php echo $urls[1]=='kepengurusan'?'active':'' ?>">
+             <i class="nav-icon fas fa-business-time"></i>
+             <p>
+               Kepengurusan
+             </p>
+           </a>
+         </li>
+         <li class="nav-item">
+           <a href="/admin/jabatan" class="nav-link <?php echo $urls[1]=='jabatan'?'active':'' ?>">
+             <i class="nav-icon fas fa-briefcase"></i>
+             <p>
+               Jabatan
+             </p>
+           </a>
+         </li>
+         <li class="nav-item">
+           <a href="/admin/pengurus" class="nav-link <?php echo $urls[1]=='pengurus'?'active':'' ?>">
+             <i class="nav-icon fas fa-id-badge"></i>
+             <p>
+               Pengurus
+             </p>
+           </a>
          </li>
        </ul>
      </nav>
