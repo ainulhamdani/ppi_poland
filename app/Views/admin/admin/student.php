@@ -49,8 +49,10 @@
                   <td><?php echo $student['start_date'] ?></td>
                   <td><?php echo $student['end_date'] ?></td>
                   <td><?php echo $student['student_status'] ?></td>
-                  <td><a href="/admin/student/edit/<?php echo $student['id'] ?>" type="button" class="btn-sm btn-block btn-warning">Edit</a></td>
-                  <td><a href="/admin/student/delete/<?php echo $student['id'] ?>" type="button" class="btn-sm btn-block btn-danger" data-name="<?php echo $student['fullname'] ?>" data-id="<?php echo $student['id'] ?>" data-toggle="modal" data-target="#modal-delete">Del</a></td>
+                  <td>
+                    <a href="/admin/student/edit/<?php echo $student['id'] ?>" type="button" class="btn-sm btn-warning">Edit</a>
+                    <a href="/admin/student/delete/<?php echo $student['id'] ?>" type="button" class="btn-sm btn-danger" data-name="<?php echo $student['fullname'] ?>" data-id="<?php echo $student['id'] ?>" data-toggle="modal" data-target="#modal-delete">Del</a>
+                  </td>
                 </tr>
               <?php endforeach; ?>
                 </tbody>

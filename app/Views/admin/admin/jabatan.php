@@ -39,8 +39,10 @@
                 <?php foreach ($jabatans as $jabatan): ?>
                 <tr>
                   <td><?php echo $jabatan['name'] ?></td>
-                  <td><a href="/admin/jabatan/edit/<?php echo $jabatan['id'] ?>" type="button" class="btn-sm btn-block btn-warning">Edit</a></td>
-                  <td><a href="/admin/jabatan/delete/<?php echo $jabatan['id'] ?>" type="button" class="btn-sm btn-block btn-danger" data-name="<?php echo $jabatan['name'] ?>" data-id="<?php echo $jabatan['id'] ?>" data-toggle="modal" data-target="#modal-delete">Del</a></td>
+                  <td>
+                    <a href="/admin/jabatan/edit/<?php echo $jabatan['id'] ?>" type="button" class="btn-sm btn-warning">Edit</a>
+                    <a href="/admin/jabatan/delete/<?php echo $jabatan['id'] ?>" type="button" class="btn-sm btn-danger" data-name="<?php echo $jabatan['name'] ?>" data-id="<?php echo $jabatan['id'] ?>" data-toggle="modal" data-target="#modal-delete">Del</a>
+                  </td>
                 </tr>
               <?php endforeach; ?>
                 </tbody>

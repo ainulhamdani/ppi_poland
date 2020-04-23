@@ -45,9 +45,11 @@
                   <td><?php echo $pengurus['jabatan_name'] ?></td>
                   <td><?php echo $pengurus['kepengurusan_name'] ?></td>
                   <td><?php echo $pengurus['is_active']?'Ya':'Tidak' ?></td>
-                  <td><a href="/admin/pengurus/edit/<?php echo $pengurus['id'] ?>" type="button" class="btn-sm btn-block btn-warning">Edit</a></td>
-                  <td><a href="/admin/pengurus/deactivate/<?php echo $pengurus['id'] ?>" type="button" class="btn-sm btn-block btn-<?php echo $pengurus['is_active']?'secondary':'primary' ?>" data-name="<?php echo $pengurus['fullname'] ?>" data-id="<?php echo $pengurus['id'] ?>" data-activate="<?php echo $pengurus['is_active']?'Deactivate':'Activate' ?>" data-toggle="modal" data-target="#modal-deactivate"><?php echo $pengurus['is_active']?'Deactivate':'Activate' ?></a></td>
-                  <td><a href="/admin/pengurus/delete/<?php echo $pengurus['id'] ?>" type="button" class="btn-sm btn-block btn-danger" data-name="<?php echo $pengurus['fullname'] ?>" data-id="<?php echo $pengurus['id'] ?>" data-toggle="modal" data-target="#modal-delete">Del</a></td>
+                  <td>
+                    <a href="/admin/pengurus/edit/<?php echo $pengurus['id'] ?>" type="button" class="btn-sm btn-warning">Edit</a>
+                    <a href="/admin/pengurus/deactivate/<?php echo $pengurus['id'] ?>" type="button" class="btn-sm btn-<?php echo $pengurus['is_active']?'secondary':'primary' ?>" data-name="<?php echo $pengurus['fullname'] ?>" data-id="<?php echo $pengurus['id'] ?>" data-activate="<?php echo $pengurus['is_active']?'Deactivate':'Activate' ?>" data-toggle="modal" data-target="#modal-deactivate"><?php echo $pengurus['is_active']?'Deactivate':'Activate' ?></a>
+                    <a href="/admin/pengurus/delete/<?php echo $pengurus['id'] ?>" type="button" class="btn-sm btn-danger" data-name="<?php echo $pengurus['fullname'] ?>" data-id="<?php echo $pengurus['id'] ?>" data-toggle="modal" data-target="#modal-delete">Del</a>
+                  </td>
                 </tr>
               <?php endforeach; ?>
                 </tbody>

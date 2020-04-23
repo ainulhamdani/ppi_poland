@@ -43,8 +43,10 @@
                   <td><?php echo $kepengurusan['name'] ?></td>
                   <td><?php echo $kepengurusan['periode_start'] ?></td>
                   <td><?php echo $kepengurusan['periode_end'] ?></td>
-                  <td><a href="/admin/kepengurusan/edit/<?php echo $kepengurusan['id'] ?>" type="button" class="btn-sm btn-block btn-warning">Edit</a></td>
-                  <td><a href="/admin/kepengurusan/delete/<?php echo $kepengurusan['id'] ?>" type="button" class="btn-sm btn-block btn-danger" data-name="<?php echo $kepengurusan['name'] ?>" data-id="<?php echo $kepengurusan['id'] ?>" data-toggle="modal" data-target="#modal-delete">Del</a></td>
+                  <td>
+                    <a href="/admin/kepengurusan/edit/<?php echo $kepengurusan['id'] ?>" type="button" class="btn-sm btn-warning">Edit</a>
+                    <a href="/admin/kepengurusan/delete/<?php echo $kepengurusan['id'] ?>" type="button" class="btn-sm btn-danger" data-name="<?php echo $kepengurusan['name'] ?>" data-id="<?php echo $kepengurusan['id'] ?>" data-toggle="modal" data-target="#modal-delete">Del</a>
+                  </td>
                 </tr>
               <?php endforeach; ?>
                 </tbody>

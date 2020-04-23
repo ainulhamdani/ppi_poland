@@ -47,8 +47,10 @@
                   <td><a target="_blank" href="<?php echo $university['website'] ?>"><?php echo $university['website'] ?></a></td>
                   <td><?php echo $university['region'] ?></td>
                   <td><?php echo $university['latlang'] ?></td>
-                  <td><a href="/admin/university/edit/<?php echo $university['id'] ?>" type="button" class="btn-sm btn-block btn-warning">Edit</a></td>
-                  <td><a href="/admin/university/delete/<?php echo $university['id'] ?>" type="button" class="btn-sm btn-block btn-danger" data-name="<?php echo $university['name'] ?>" data-id="<?php echo $university['id'] ?>" data-toggle="modal" data-target="#modal-delete">Del</a></td>
+                  <td>
+                    <a href="/admin/university/edit/<?php echo $university['id'] ?>" type="button" class="btn-sm btn-warning">Edit</a>
+                    <a href="/admin/university/delete/<?php echo $university['id'] ?>" type="button" class="btn-sm btn-danger" data-name="<?php echo $university['name'] ?>" data-id="<?php echo $university['id'] ?>" data-toggle="modal" data-target="#modal-delete">Del</a>
+                  </td>
                 </tr>
               <?php endforeach; ?>
                 </tbody>
