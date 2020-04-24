@@ -135,7 +135,7 @@
               myDropzone.processQueue();
             } else {
               if (content!='') {
-                $.post( "/home/add_post", { content: content })
+                $.post( "/home/add_post", { <?php echo csrf_token();?>: "<?php echo csrf_hash();?>", content: content })
                   .done(function( data ) {
                     $("#content").val('');
                     console.log( "Data Loaded: " + data );
@@ -168,15 +168,16 @@
             var data = $('#post_form').serializeArray();
             $.each(data, function(key, el) {
                 formData.append(el.name, el.value);
+            });
+            formData.append('<?php echo csrf_token();?>', '<?php echo csrf_hash();?>');
+            
+            this.on('success', function(e, data) {
+              // this.removeAllFiles();
+              console.log( i + ". Data Loaded: " );
+              i = i+1;
+              location.reload();
+            });
           });
-
-          this.on('success', function(e, data) {
-            // this.removeAllFiles();
-            console.log( i + ". Data Loaded: " );
-            i = i+1;
-            location.reload();
-          });
-        });
         },
       };
       var myDropzone = new Dropzone("#dropzone", (Dropzone.options.dropzone));

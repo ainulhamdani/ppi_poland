@@ -31,6 +31,7 @@
               <!-- /.card-header -->
               <!-- form start -->
               <form role="form" method="post" action="/admin/jabatan/add">
+                <?php echo csrf_field() ?>
                 <?php if (isset($jabatan['id'])) { ?>
                   <input name="id" type="hidden" value="<?php echo $jabatan['id'] ?>">
                 <?php } ?>

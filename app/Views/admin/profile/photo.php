@@ -87,6 +87,7 @@
         quality: .5,
         success(result) {
           const formData = new FormData();
+          formData.append('<?php echo csrf_token();?>', '<?php echo csrf_hash();?>');
           if (user_id) {
             formData.append('id', user_id.value);
           }
@@ -105,6 +106,7 @@
                 }
                 reader.readAsDataURL(result);
                 // console.log(data)
+                window.location = "/profile/photo";
             },
             cache: false,
             contentType: false,

@@ -113,7 +113,7 @@
       modal.find('#_name').text(name)
 
       $('#go_delete').click(function() {
-        $.post( url, { <?php echo csrf_token();?>: "<?php echo csrf_hash();?>"})
+        $.post( url, { <?php echo csrf_token();?>: "<?php echo csrf_hash();?>", delete:true})
         .done(function( data ) {
           if (data=='success') {
             window.location = "/admin/university";

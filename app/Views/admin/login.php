@@ -28,6 +28,7 @@
       <p class="login-box-msg">Sign in to start your session</p>
       <div id="infoMessage"><?php echo isset($message)?$message:'';?></div>
       <form action="/auth/authenticate" method="post">
+        <?php echo csrf_field() ?>
         <div class="input-group mb-3">
           <input name="username" type="text" class="form-control" placeholder="Email" required>
           <div class="input-group-append">

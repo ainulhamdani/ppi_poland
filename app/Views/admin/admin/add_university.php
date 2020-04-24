@@ -31,6 +31,7 @@
               <!-- /.card-header -->
               <!-- form start -->
               <form role="form" method="post" action="/admin/university/add">
+                <?php echo csrf_field() ?>
                 <?php if (isset($university['id'])) { ?>
                   <input name="id" type="hidden" value="<?php echo $university['id'] ?>">
                 <?php } ?>

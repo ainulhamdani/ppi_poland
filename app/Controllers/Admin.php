@@ -38,7 +38,6 @@ class Admin extends IonAuthController
       $view = 'admin/admin/add_university';
     } elseif($mode == "delete"){
 			if ($this->request->getPost()) {
-				$this->security->CSRFVerify($this->request);
 				if($universityModel->delete($id)) {
 					echo 'success';
 				}
@@ -93,7 +92,6 @@ class Admin extends IonAuthController
       $view = 'admin/admin/add_student';
     } elseif($mode == "delete"){
 			if ($this->request->getPost()) {
-				$this->security->CSRFVerify($this->request);
 				if($studentModel->delete($id)) {
 					echo 'success';
 				}
@@ -147,7 +145,6 @@ class Admin extends IonAuthController
       $view = 'admin/admin/add_kepengurusan';
     } elseif($mode == "delete"){
 			if ($this->request->getPost()) {
-				$this->security->CSRFVerify($this->request);
 				if($kepengurusanModel->delete($id)) {
 					echo 'success';
 				}
@@ -174,7 +171,6 @@ class Admin extends IonAuthController
 	}
 
 	public function jabatan($mode="", $id=""){
-		// var_dump($this->security);exit;
 		$jabatanModel = model('App\Models\JabatanModel');
 
     if ($mode == "add" || $mode == "edit") {
@@ -198,7 +194,6 @@ class Admin extends IonAuthController
       $view = 'admin/admin/add_jabatan';
     } elseif($mode == "delete"){
 			if ($this->request->getPost()) {
-				$this->security->CSRFVerify($this->request);
 				if($jabatanModel->delete($id)) {
 					echo 'success';
 				}
@@ -266,7 +261,6 @@ class Admin extends IonAuthController
       $view = 'admin/admin/add_pengurus';
     } elseif($mode == "delete"){
 			if ($this->request->getPost()) {
-				$this->security->CSRFVerify($this->request);
 				if($pengurusModel->delete($id)) {
 					echo 'success';
 				}
@@ -278,7 +272,6 @@ class Admin extends IonAuthController
 			return;
 		} elseif($mode == "deactivate"){
 			if ($this->request->getPost()) {
-				$this->security->CSRFVerify($this->request);
 				$is_activate = $this->request->getPost('is_activate');
 				$col['id'] = $id;
 				$col['is_active'] = $is_activate == "Activate"?1:0;

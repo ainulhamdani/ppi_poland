@@ -28,6 +28,7 @@
       <p class="login-box-msg">Register a new account</p>
 
       <form action="/auth/do_register" method="post">
+        <?php echo csrf_field() ?>
         <div class="input-group mb-3">
           <input id="fullname" name="fullname" type="text" class="form-control" placeholder="Full name" required>
           <div class="input-group-append">

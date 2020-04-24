@@ -31,6 +31,7 @@
               <!-- /.card-header -->
               <!-- form start -->
               <form role="form" method="post" action="/admin/pengurus/add">
+                <?php echo csrf_field() ?>
                 <?php if (isset($pengurus['id'])) { ?>
                   <input name="id" type="hidden" value="<?php echo $pengurus['id'] ?>">
                 <?php } ?>

@@ -27,6 +27,7 @@
               <!-- /.card-header -->
               <!-- form start -->
               <form role="form" method="post" action="/profile/general">
+                <?php echo csrf_field() ?>
                 <?php if (isset($student['id'])) { ?>
                   <input name="id" type="hidden" value="<?php echo $student['id'] ?>">
                 <?php } ?>
