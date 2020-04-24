@@ -61,4 +61,16 @@ class BaseModel extends Model
     return $this;
   }
 
+  public function withSelectCount($column, $custom_name=null){
+
+    if ($custom_name!=null) {
+      $this->builder()
+  			 ->selectCount($column, $custom_name);
+    } else {
+      $this->builder()
+  			 ->selectCount($column);
+    }
+
+    return $this;
+  }
 }

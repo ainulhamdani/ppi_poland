@@ -30,8 +30,8 @@
                     <textarea id="content" class="form-control" name="content" rows="2" placeholder="Share your thoughts ..."></textarea>
                     <div id="dropzone"  class="dropzone">
                       <div class="fallback">
-                        <input id="photofile" class="custom-file-input" name="post_photo" type="file" multiple accept="image/x-png, image/jpeg" />
-                        <label class="custom-file-label" for="photofile">Choose photo</label>
+                        <input id="photofile" class="custom-file-input" name="post_photo" type="file" multiple accept="image/png, image/jpeg" />
+                        <!-- <label class="custom-file-label" for="photofile">Choose photo</label> -->
                       </div>
                     </div>
                     <button id="add_photo" class="btn btn-block btn-secondary">Add Photo</button>
@@ -45,60 +45,8 @@
         </div>
         <div class="row">
           <!-- /.col -->
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-body">
-                <!-- <?php var_dump($posts); ?> -->
-                <?php foreach($posts as $post): ?>
-                <!-- Post -->
-                <div class="post">
-                  <div class="user-block">
-                    <?php if ($post['photo']) { ?>
-                      <img class="img-circle img-bordered-sm" src="<?php echo base_url().'/assets/uploads/profile_pictures/'.$post['photo']?>" alt="" style="object-fit: cover;">
-                    <?php } else { ?>
-                      <img class="img-circle img-bordered-sm" src="<?php echo base_url()?>/assets/theme/adminlte/img/avatar.png" alt="user image">
-                    <?php } ?>
-                    <span class="username">
-                      <a href="/home/user/<?php echo $post['user_id'] ?>"><?php echo $post['fullname'] ?></a>
-                    </span>
-                    <span class="description"><?php echo $post['created_at'] ?></span>
-                  </div>
-                  <!-- /.user-block -->
+          <div id="the_posts" class="col-md-12">
 
-                  <?php if($post['attach_count']): ?>
-                  <div class="row mb-3">
-                    <?php
-                    $attachments = explode(',',$post['attachment']);
-                    foreach($attachments as $attachment):
-                    ?>
-                    <div class="col-sm-6">
-                      <img class="img-fluid mb-3" src="<?php echo base_url()?>/assets/uploads/posts/<?php echo $post['user_id'] ?>/<?php echo $attachment?>" alt="Photo">
-                    </div>
-                    <?php endforeach; ?>
-                  </div>
-                <?php endif; ?>
-
-                  <p>
-                    <?php echo $post['content'] ?>
-                  </p>
-
-                  <p>
-                    <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a> <?php echo $post['likes_count']?' - '.$post['likes_count'].' people like this':'' ?>
-                    <span class="float-right">
-                      <a href="#" class="link-black text-sm">
-                        <i class="far fa-comments mr-1"></i> Comments (<?php echo $post['comment_count']?$post['comment_count']:'0' ?>)
-                      </a>
-                    </span>
-                  </p>
-
-                  <input class="form-control form-control-sm" type="text" placeholder="Type a comment">
-                </div>
-                <!-- /.post -->
-              <?php endforeach; ?>
-
-              </div><!-- /.card-body -->
-            </div>
-            <!-- /.nav-tabs-custom -->
           </div>
           <!-- /.col -->
         </div>
@@ -110,6 +58,81 @@
   <!-- /.content-wrapper -->
   <?php \CodeIgniter\Events\Events::on('custom_script', function() { ?>
     <script type='text/javascript'>
+      var post_count = 0;
+      var total_count = 0;
+      $( document ).ready(function() {
+        $.get( "/api/get_post_count", function( data ) {
+          total_count = data.post_count;
+        }, "json" );
+        $.get( "/home/get_posts", function( data ) {
+          $( "#the_posts" ).append( data );
+          attach_comment_event();
+        });
+        $(window).on('scroll', function() {
+            if( $(window).scrollTop() + $(window).height() == $(document).height() && post_count < total_count) {
+              post_count = post_count+10;
+              $.get( "/home/get_posts/10/"+post_count, function( data ) {
+                $( "#the_posts" ).append( data );
+                attach_comment_event();
+              });
+            }
+        });
+      });
+
+      function attach_comment_event(){
+        $('.comment_text:not(.enter-bound)').each(function(index){
+          let post_id = $(this).data('post-id');
+          let text_box = $(this);
+          text_box.addClass('enter-bound');
+          text_box.keypress(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+              if ($.trim(text_box.val())!="") {
+                let comment = text_box.val();
+                $.post( "/home/add_comment", { <?php echo csrf_token();?>: "<?php echo csrf_hash();?>", post_id: post_id, comment: comment })
+                  .done(function( data ) {
+                    text_box.val('');
+                    let comment_count = $( "#comment_count_"+post_id ).text();
+                    if (comment_count!="") {
+                      comment_count = parseInt(comment_count);
+                      $( "#comment_count_"+post_id ).text(comment_count+1);
+                    }
+                    $( "#comment_"+post_id ).append( data );
+                });
+              }
+            }
+            event.stopPropagation();
+          });
+        });
+      }
+
+      function get_comments(post_id){
+        if($( "#comment_"+post_id ).hasClass('has-data')){
+          $( "#comment_"+post_id ).toggle();
+        } else {
+          $.get( "/home/get_comments/"+post_id, function( data ) {
+            if (data!='empty') {
+              $( "#comment_"+post_id ).addClass('has-data');
+              $( "#comment_"+post_id ).append( data );
+              $( "#view_comments_"+post_id ).hide();
+            }
+          });
+        }
+
+      }
+
+      function view_comments(post_id){
+        $.get( "/home/get_comments/"+post_id, function( data ) {
+          $( "#comment_"+post_id ).addClass('has-data');
+          $( "#comment_"+post_id ).append( data );
+          $( "#view_comments_"+post_id ).hide();
+        });
+      }
+
+      function like_post(post_id){
+
+      }
+
       var i = 1;
       var dropzoneDisabled = true;
       Dropzone.options.dropzone = {
@@ -170,7 +193,7 @@
                 formData.append(el.name, el.value);
             });
             formData.append('<?php echo csrf_token();?>', '<?php echo csrf_hash();?>');
-            
+
             this.on('success', function(e, data) {
               // this.removeAllFiles();
               console.log( i + ". Data Loaded: " );
