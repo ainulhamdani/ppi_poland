@@ -15,8 +15,10 @@ class Profile extends IonAuthController
     $userModel = model('App\Models\UserModel');
     $universityModel = model('App\Models\UniversityModel');
     $studentStatusModel = model('App\Models\StudentStatusModel');
+    $locationModel = model('App\Models\LocationModel');
 
 		if ($this->request->getPost()) {
+			// var_dump($this->request->getPost());exit;
 			if ($studentModel->save($this->request->getPost()) !== false)
 			{
 					$postData = $this->request->getPost();
@@ -29,7 +31,17 @@ class Profile extends IonAuthController
 
 		$this->data['universities'] = $universityModel->findAll();
 		$this->data['statuses'] = $studentStatusModel->findAll();
+		$this->data['locations'] = $locationModel
+			->withSelect(['location.*','parent_loc.name as parent_loc_name'])
+			->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','parent_id')
+			->withWhere('level',3)
+			->withOrderBy('parent_loc_name','DESC')->findAll();
 
+		$this->data['majors'] = $studentModel
+			->withSelect(['major'])
+			->withGroupBy('major')
+			->findAll();
+			
 		$this->data['student'] = $studentModel
 		->withSelect(['student.*','users.fullname','users.nickname','users.email','university.name as university_name','student_status.description as student_status'])
 		->withJoin('users','id','user_id')

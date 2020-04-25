@@ -1,14 +1,14 @@
 <?php namespace App\Models;
 
-class StudentModel extends BaseModel
+class LocationModel extends BaseModel
 {
-  protected $table      = 'student';
+  protected $table      = 'location';
   protected $primaryKey = 'id';
 
   protected $returnType = 'array';
   protected $useSoftDeletes = true;
 
-  protected $allowedFields = ['user_id', 'university_id', 'major', 'location_id', 'start_date', 'end_date', 'student_status_id'];
+  protected $allowedFields = ['name', 'parent_id', 'level', 'latitude','longitude'];
 
   protected $useTimestamps = true;
   protected $createdField  = 'created_at';

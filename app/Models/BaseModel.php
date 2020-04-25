@@ -30,6 +30,14 @@ class BaseModel extends Model
     return $this;
   }
 
+  public function withGroupBy($column){
+
+    $this->builder()
+			 ->groupBy($column);
+
+    return $this;
+  }
+
   public function withJoin($joinTable, $targetColumn, $sourceColumn, $joinType='LEFT'){
 
     $this->builder()

@@ -54,6 +54,24 @@
                     </select>
                   </div>
                   <div class="form-group">
+                    <label for="major">Major</label>
+                    <input name="major" list="majors" type="text" class="form-control" id="major" value="<?php echo isset($student['major'])?$student['major']:'' ?>" placeholder="Enter Student Major" required>
+                    <datalist id="majors">
+                      <?php foreach ($majors as $major) { ?>
+                      <option><?php echo $major['major'] ?></option>
+                      <?php } ?>
+                    </datalist>
+                  </div>
+                  <div class="form-group">
+                    <label for="location">Town</label>
+                    <select name="location_id" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="location" style="width: 100%;">
+                      <option value=""> --- </option>
+                      <?php foreach ($locations as $location) { ?>
+                      <option value="<?php echo $location['id'] ?>" <?php echo $location['id']==$student['location_id']?"selected":""; ?>><?php echo $location['parent_loc_name'].' - '.$location['name'] ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+                  <div class="form-group">
                     <label for="start_date">Start Date</label>
                     <input name="start_date" type="date" class="form-control" id="start_date" value="<?php echo isset($student['start_date'])?$student['start_date']:'' ?>" placeholder="Enter Start Date">
                   </div>
