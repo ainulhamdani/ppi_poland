@@ -151,7 +151,7 @@ class IonAuth extends \CodeIgniter\Config\BaseConfig
 																	IMPORTANT: If you are changing it from the default (email),
 																				update the UNIQUE constraint in your DB */
 	public $minPasswordLength        = 8;                   // Minimum Required Length of Password (not enforced by lib - see note above)
-	public $emailActivation          = false;               // Email Activation for registration
+	public $emailActivation          = true;               // Email Activation for registration
 	public $manualActivation         = false;               // Manual Activation for registration
 	public $rememberUsers            = true;                // Allow users to be remembered and enable auto-login
 	public $userExpire               = 86500;               // How long to remember the user (seconds). Set to zero for no expiration

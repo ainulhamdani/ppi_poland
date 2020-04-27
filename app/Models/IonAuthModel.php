@@ -402,7 +402,7 @@ class IonAuthModel
 	 * @return boolean
 	 * @author Mathew
 	 */
-	public function activate($id, bool $code=false): bool
+	public function activate($id, $code=false): bool
 	{
 		$this->triggerEvents('pre_activate');
 

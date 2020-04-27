@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>PPI Polandia | Log in</title>
+  <title>PPI Polandia | Recover Password</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <!-- Font Awesome -->
   <link rel="stylesheet" href="<?php echo base_url()?>/assets/theme/adminlte/plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
@@ -25,20 +26,23 @@
   <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
-      <p class="login-box-msg">Sign in to start your session</p>
-      <div id="infoMessage"><?php echo isset($message)?$message:'';?></div>
-      <form action="/auth/authenticate" method="post">
+      <p class="login-box-msg">You are only one step a way from your new password, recover your password now.</p>
+
+      <form id="recover_form" action="/auth/reset_password?confirmation_token=<?php echo $code; ?>" method="post">
         <?php echo csrf_field() ?>
+        <?php if (isset($user_id)) { ?>
+          <input name="user_id" type="hidden" value="<?php echo $user_id ?>">
+        <?php } ?>
         <div class="input-group mb-3">
-          <input name="username" type="text" class="form-control" placeholder="Email" required>
+          <input name="password" type="password" class="form-control" placeholder="Password">
           <div class="input-group-append">
             <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
+              <span class="fas fa-lock"></span>
             </div>
           </div>
         </div>
         <div class="input-group mb-3">
-          <input name="password" type="password" class="form-control" placeholder="Password" required>
+          <input name="password2" type="password" class="form-control" placeholder="Confirm Password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -46,31 +50,15 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-8">
-            <div class="icheck-primary">
-              <input type="checkbox" id="remember">
-              <label for="remember">
-                Remember Me
-              </label>
-            </div>
-          </div>
-          <!-- /.col -->
-          <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-block">Change password</button>
           </div>
           <!-- /.col -->
         </div>
       </form>
 
-      <div class="social-auth-links text-center mb-3">
-      </div>
-      <!-- /.social-auth-links -->
-
-      <p class="mb-1">
-        <a href="/auth/forgot_password">I forgot my password</a>
-      </p>
-      <p class="mb-0">
-        <a href="/auth/register" class="text-center">Register a new account</a>
+      <p class="mt-3 mb-1">
+        <a href="/auth">Login</a>
       </p>
     </div>
     <!-- /.login-card-body -->
@@ -84,6 +72,31 @@
 <script src="<?php echo base_url()?>/assets/theme/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo base_url()?>/assets/theme/adminlte/js/adminlte.min.js"></script>
-
+<script>
+$( document ).ready(function() {
+  var stop = true;
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000
+  });
+  $('#recover_form').submit(function(event){
+    if (stop) {
+      event.preventDefault();
+      var datastring = $("#recover_form").serializeArray();
+      if (datastring[2].value!=datastring[3].value) {
+        Toast.fire({
+          icon: 'error',
+          title: 'Password not match'
+        })
+      } else {
+        stop = false;
+        $('#recover_form').submit();
+      }
+    }
+  })
+})
+</script>
 </body>
 </html>

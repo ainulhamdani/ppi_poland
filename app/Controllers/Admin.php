@@ -304,4 +304,82 @@ class Admin extends IonAuthController
 		echo view('admin/include/footer');
 	}
 
+	public function email_setting(){
+		$mailSettingsModel = model('App\Models\MailSettingModel');
+
+		if ($this->request->getPost()) {
+			if ($mailSettingsModel->save($this->request->getPost()) !== false)
+			{
+					return redirect()->to('/admin/email_setting');
+			}
+		}
+
+		$this->data['email_setting'] = $mailSettingsModel->first();
+
+		$view = 'admin/admin/email_setting';
+		echo view('admin/include/header');
+		echo view('admin/include/navbar');
+		echo view('admin/include/sidebar_admin', $this->data);
+		echo view($view, $this->data);
+		echo view('admin/include/footer');
+	}
+
+	public function additional_form_setting($mode="", $id=""){
+		$additionalInfoFieldModel = model('App\Models\AdditionalInfoFieldModel');
+
+    if ($mode == "add" || $mode == "edit") {
+      if ($this->request->getPost()) {
+        if ($additionalInfoFieldModel->save($this->request->getPost()) !== false)
+        {
+            return redirect()->to('/admin/additional_form_setting');
+        }
+      }
+
+			$filedTypeModel = model('App\Models\FieldTypeModel');
+
+			$this->data['field_types'] =
+        $filedTypeModel
+          ->findAll();
+
+      $this->data['mode'] = $mode;
+      $this->data['id'] = $id;
+      $this->data['info_field'] = [];
+      if ($id!="") {
+        $this->data['info_field'] = $additionalInfoFieldModel
+        ->find($id);
+      }
+
+      $this->useSelect2('select2');
+
+      $view = 'admin/admin/add_additional_info_field';
+    } elseif($mode == "delete"){
+			if ($this->request->getPost()) {
+				if($additionalInfoFieldModel->delete($id)) {
+					echo 'success';
+				}
+				return;
+			} else{
+				return redirect()->to('/admin/additional_form_setting');
+			}
+			echo 'failed';
+			return;
+		} else {
+      $this->useDataTables('additional_info_field_table');
+
+      $this->data['info_fields'] =
+        $additionalInfoFieldModel
+          ->withSelect(['student_additional_info_field.*','field_type.name as field_type_name'])
+          ->withJoin('field_type','id','type_id')
+          ->findAll();
+
+      $view = 'admin/admin/additional_info_field';
+    }
+
+		echo view('admin/include/header');
+		echo view('admin/include/navbar');
+		echo view('admin/include/sidebar_admin', $this->data);
+		echo view($view, $this->data);
+		echo view('admin/include/footer');
+	}
+
 }

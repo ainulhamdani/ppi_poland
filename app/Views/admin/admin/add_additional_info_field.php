@@ -4,12 +4,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1><?php echo ucwords($mode); ?>Kepengurusan</h1>
+            <h1><?php echo ucwords($mode); ?> New Additional Info Field</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Admin</a></li>
-              <li class="breadcrumb-item"><a href="#">Kepengurusan</a></li>
+              <li class="breadcrumb-item"><a href="#">Additional Info Field</a></li>
               <li class="breadcrumb-item active"><?php echo ucwords($mode); ?></li>
             </ol>
           </div>
@@ -26,27 +26,31 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title"><?php echo ucwords($mode); ?> Kepengurusan</h3>
+                <h3 class="card-title"><?php echo ucwords($mode); ?> New Field</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" method="post" action="/admin/kepengurusan/add">
+              <form role="form" method="post" action="/admin/additional_form_setting/add">
                 <?php echo csrf_field() ?>
-                <?php if (isset($kepengurusan['id'])) { ?>
-                  <input name="id" type="hidden" value="<?php echo $kepengurusan['id'] ?>">
+                <?php if (isset($info_field['id'])) { ?>
+                  <input name="id" type="hidden" value="<?php echo $info_field['id'] ?>">
                 <?php } ?>
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="name">Kepenguruan Name</label>
-                    <input name="name" type="text" class="form-control" id="name" value="<?php echo isset($kepengurusan['name'])?$kepengurusan['name']:'' ?>" placeholder="Enter Kepengurusan Name" required>
+                    <label for="name">Field Name</label>
+                    <input name="name" type="text" class="form-control" id="name" value="<?php echo isset($info_field['name'])?$info_field['name']:'' ?>" placeholder="Enter Field Name" required>
                   </div>
                   <div class="form-group">
-                    <label for="periode_start">Periode Start</label>
-                    <input name="periode_start" type="date" class="form-control" id="periode_start" value="<?php echo isset($kepengurusan['periode_start'])?$kepengurusan['periode_start']:'' ?>">
+                    <label for="label">Field Label</label>
+                    <input name="label" type="text" class="form-control" id="label" value="<?php echo isset($info_field['label'])?$info_field['label']:'' ?>" placeholder="Enter Field Label" required>
                   </div>
                   <div class="form-group">
-                    <label for="periode_start">Periode End</label>
-                    <input name="periode_end" type="date" class="form-control" id="periode_end" value="<?php echo isset($kepengurusan['periode_end'])?$kepengurusan['periode_end']:'' ?>">
+                    <label for="type_id">Field Type</label>
+                    <select name="type_id" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="type_id" style="width: 100%;">
+                      <?php foreach ($field_types as $field_type) { ?>
+                      <option value="<?php echo $field_type['id'] ?>"  <?php echo $info_field?($field_type['id']==$info_field['type_id']?"selected":""):""; ?>><?php echo $field_type['name'] ?></option>
+                      <?php } ?>
+                    </select>
                   </div>
                 </div>
                 <!-- /.card-body -->

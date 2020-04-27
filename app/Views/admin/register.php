@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 3 | Registration Page</title>
+  <title>PPI POLANDIA | Registration Page</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- icheck bootstrap -->
   <link rel="stylesheet" href="<?php echo base_url()?>/assets/theme/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="<?php echo base_url()?>/assets/theme/adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="<?php echo base_url()?>/assets/theme/adminlte/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
@@ -20,14 +22,14 @@
 <body class="hold-transition register-page">
 <div class="register-box">
   <div class="register-logo">
-    <a href="<?php echo base_url()?>/assets/theme/adminlte/index2.html"><b>PPI</b> POLANDIA</a>
+    <a href="<?php echo base_url()?>"><b>PPI</b> POLANDIA</a>
   </div>
 
   <div class="card">
     <div class="card-body register-card-body">
       <p class="login-box-msg">Register a new account</p>
 
-      <form action="/auth/do_register" method="post">
+      <form id="register_form" action="/auth/do_register" method="post">
         <?php echo csrf_field() ?>
         <div class="input-group mb-3">
           <input id="fullname" name="fullname" type="text" class="form-control" placeholder="Full name" required>
@@ -100,7 +102,44 @@
 <script src="<?php echo base_url()?>/assets/theme/adminlte/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="<?php echo base_url()?>/assets/theme/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="<?php echo base_url()?>/assets/theme/adminlte/plugins/sweetalert2/sweetalert2.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo base_url()?>/assets/theme/adminlte/js/adminlte.min.js"></script>
+<script>
+$( document ).ready(function() {
+  var stop = true;
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000
+  });
+  $('#register_form').submit(function(event){
+    if (stop) {
+      event.preventDefault();
+      var datastring = $("#register_form").serializeArray();
+      if (datastring[4].value!=datastring[5].value) {
+        Toast.fire({
+          icon: 'error',
+          title: 'Password not match'
+        })
+      }else{
+        $.get('/api/check_email?email='+datastring[3].value , function(response){
+          if (response.exist) {
+            Toast.fire({
+              icon: 'warning',
+              title: 'Email already registered, please use another email, or login'
+            })
+          } else {
+            stop = false;
+            $('#register_form').submit();
+          }
+        })
+      }
+    }
+  })
+})
+</script>
 </body>
 </html>
