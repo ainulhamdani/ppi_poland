@@ -14,6 +14,28 @@
             </ol>
           </div>
         </div>
+        <?php if(!$is_active): ?>
+        <div class="row">
+          <div class="col-sm-12 col-12">
+            <!-- small card -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <center>
+                  <div style="font-weight:900; font-size:24px">Account not activated</div>
+                  <div>You cannot post or comment</div>
+                  <div>Please activate your account with the link that sent to your email</div>
+                </center>
+              </div>
+              <div class="icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <a href="/profile/general" class="small-box-footer">
+                Update email <i class="fas fa-arrow-circle-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <?php endif; ?>
       </div><!-- /.container-fluid -->
     </section>
 

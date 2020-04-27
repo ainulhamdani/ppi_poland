@@ -111,37 +111,39 @@ class Home extends IonAuthController
 	}
 
 	public function add_post(){
-		$postModel = model('App\Models\PostModel');
-		$postAttachmentModel = model('App\Models\PostAttachmentModel');
+		if ($this->data['is_active']) {
+			$postModel = model('App\Models\PostModel');
+			$postAttachmentModel = model('App\Models\PostAttachmentModel');
 
-		if ($this->request->getFiles()) {
-			$files = $this->request->getFileMultiple('post_photo');
-			$postData = $this->request->getPost();
-			$postData['user_id'] =  $this->ionAuth->getUserId();
-			if ($files) {
-				$postId = $postModel->insert($postData);
-				if ($postId) {
-					$path = ROOTPATH.'public/assets/uploads/posts/'.$postData['user_id'];
-					if (!file_exists($path)) {
-					    mkdir($path, 0755, true);
+			if ($this->request->getFiles()) {
+				$files = $this->request->getFileMultiple('post_photo');
+				$postData = $this->request->getPost();
+				$postData['user_id'] =  $this->ionAuth->getUserId();
+				if ($files) {
+					$postId = $postModel->insert($postData);
+					if ($postId) {
+						$path = ROOTPATH.'public/assets/uploads/posts/'.$postData['user_id'];
+						if (!file_exists($path)) {
+						    mkdir($path, 0755, true);
+						}
+						foreach ($files as $file) {
+							$name = $file->getRandomName();
+							$file = $file->move($path.'/', $name);
+							$attachData['post_id'] = $postId;
+							$attachData['name'] = $name;
+							$postAttachmentModel->insert($attachData);
+						}
+						echo $postId;
+						return;
 					}
-					foreach ($files as $file) {
-						$name = $file->getRandomName();
-						$file = $file->move($path.'/', $name);
-						$attachData['post_id'] = $postId;
-						$attachData['name'] = $name;
-						$postAttachmentModel->insert($attachData);
-					}
-					echo $postId;
-					return;
 				}
+			} elseif($this->request->getPost()){
+				$postData = $this->request->getPost();
+				$postData['user_id'] =  $this->ionAuth->getUserId();
+				$postId = $postModel->insert($postData);
+				echo $postId;
+				return;
 			}
-		} elseif($this->request->getPost()){
-			$postData = $this->request->getPost();
-			$postData['user_id'] =  $this->ionAuth->getUserId();
-			$postId = $postModel->insert($postData);
-			echo $postId;
-			return;
 		}
 
 		echo 0;
@@ -149,12 +151,14 @@ class Home extends IonAuthController
 	}
 
 	public function add_comment(){
-		$postCommentModel = model('App\Models\PostCommentModel');
-		if ($this->request->getPost()) {
-			$postData = $this->request->getPost();
-			$postData['user_id'] =  $this->ionAuth->getUserId();
-			$commentId = $postCommentModel->insert($postData);
-			$this->get_comment($commentId);
+		if ($this->data['is_active']) {
+			$postCommentModel = model('App\Models\PostCommentModel');
+			if ($this->request->getPost()) {
+				$postData = $this->request->getPost();
+				$postData['user_id'] =  $this->ionAuth->getUserId();
+				$commentId = $postCommentModel->insert($postData);
+				$this->get_comment($commentId);
+			}
 		}
 	}
 
