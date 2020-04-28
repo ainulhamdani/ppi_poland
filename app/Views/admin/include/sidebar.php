@@ -21,6 +21,24 @@
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="/home/users" class="nav-link <?php echo $urls[1]=='users'||$urls[1]=='user'?'active':'' ?>">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Users
+              </p>
+            </a>
+          </li>
+          <?php if(isset($student)): ?>
+          <li class="nav-item ml-3">
+            <a href="/home/user/<?php echo $student['user_id'] ?>" class="nav-link">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                <?php echo $student['fullname'] ?>
+              </p>
+            </a>
+          </li>
+          <?php endif; ?>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

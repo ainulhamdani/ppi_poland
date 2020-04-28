@@ -66,6 +66,27 @@ class Home extends IonAuthController
 		echo view('admin/home/_get_comments', $this->data);
 	}
 
+	public function users(){
+		$studentModel = model('App\Models\StudentModel');
+
+		$this->data['students'] = $studentModel
+		->withSelect(['student.*','users.fullname','users.nickname','users.email','student_photo.name as photo','university.name as university_name',
+									'student_status.description as student_status','location.parent_id as parent_id','location.name as location_name','parent_loc.name as parent_loc_name'])
+		->withJoin('users','id','user_id')
+		->withJoin('university','id','university_id')
+		->withJoin('student_status','id','student_status_id')
+		->withJoin('student_photo','user_id','user_id')
+		->withJoin('location','id','location_id')
+		->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','location.parent_id')
+		->findAll();
+
+		echo view('admin/include/header');
+		echo view('admin/include/navbar');
+		echo view('admin/include/sidebar', $this->data);
+		echo view('admin/home/users', $this->data);
+		echo view('admin/include/footer');
+	}
+
 	public function user($id=0){
 		if ($id==0) {
 			$id = $this->ionAuth->getUserId();
