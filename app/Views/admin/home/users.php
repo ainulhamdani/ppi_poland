@@ -22,12 +22,12 @@
       <div class="container-fluid">
         <div class="row">
           <?php foreach($students as $student): ?>
-          <div class="col-md-3">
+          <div class="col-md-3 mb-3">
             <!-- Widget: user widget style 1 -->
             <a href="/home/user/<?php echo $student['user_id'] ?>" >
-              <div class="card card-widget widget-user">
+              <div class="card card-widget widget-user h-100">
                 <!-- Add the bg color to the header using any of the bg-* classes -->
-                <div class="widget-user-header bg-info">
+                <div class="widget-user-header bg-danger">
                   <h3 class="widget-user-username"><?php echo $student['fullname'] ?></h3>
                   <!-- <h5 class="widget-user-desc">Founder &amp; CEO</h5> -->
                 </div>
@@ -38,10 +38,10 @@
                     <img class="img-circle img-bordered-sm" src="<?php echo base_url()?>/assets/theme/adminlte/img/avatar.png" alt="user image">
                   <?php } ?>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer" style="background:white">
                   <div class="row">
                     <div class="col-sm-12">
-                      <div class="description-block">
+                      <div class="description-block" style="color:black">
                         <h5 class="description-header"><?php echo $student['university_name'] ?></h5>
                         <span class="description-text"><?php echo $student['location_name'] ?></span>
                       </div>
