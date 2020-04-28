@@ -47,9 +47,11 @@ class BaseModel extends Model
   }
 
   public function withCustomJoin($query, $joinTable, $targetColumn, $sourceColumn, $joinType='LEFT'){
-
+    if (strpos($sourceColumn, '.') === false) {
+        echo $sourceColumn = $this->table.'.'.$sourceColumn;
+    }
     $this->builder()
-			 ->join($query, $this->table.'.'.$sourceColumn.' = '.$joinTable.'.'.$targetColumn, $joinType);
+			 ->join($query, $sourceColumn.' = '.$joinTable.'.'.$targetColumn, $joinType);
 
     return $this;
   }

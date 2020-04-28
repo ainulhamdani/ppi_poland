@@ -83,11 +83,14 @@ class Home extends IonAuthController
     $studentStatusModel = model('App\Models\StudentStatusModel');
 
 		$this->data['student'] = $studentModel
-		->withSelect(['student.*','users.fullname','users.nickname','users.email','student_photo.name as photo','university.name as university_name','student_status.description as student_status'])
+		->withSelect(['student.*','users.fullname','users.nickname','users.email','student_photo.name as photo','university.name as university_name',
+									'student_status.description as student_status','location.parent_id as parent_id','location.name as location_name','parent_loc.name as parent_loc_name'])
 		->withJoin('users','id','user_id')
 		->withJoin('university','id','university_id')
 		->withJoin('student_status','id','student_status_id')
 		->withJoin('student_photo','user_id','user_id')
+		->withJoin('location','id','location_id')
+		->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','location.parent_id')
 		->withWhere('student.user_id',$id)
 		->first();
 

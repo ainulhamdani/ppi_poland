@@ -40,7 +40,7 @@
 
                 <h3 class="profile-username text-center"><?php echo $student['fullname']; ?></h3>
 
-                <p class="text-muted text-center">Software Engineer</p>
+                <!-- <p class="text-muted text-center">Software Engineer</p>
 
                 <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">
@@ -51,10 +51,10 @@
                   </li>
                   <li class="list-group-item">
                     <b>Friends</b> <a class="float-right">13,287</a>
-                  </li>
+                  </li> -->
                 </ul>
 
-                <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+                <!-- <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a> -->
               </div>
               <!-- /.card-body -->
             </div>
@@ -70,16 +70,16 @@
                 <strong><i class="fas fa-book mr-1"></i> Education</strong>
 
                 <p class="text-muted">
-                  B.S. in Computer Science from the University of Tennessee at Knoxville
+                  <?php echo $student['major']; ?> from <?php echo $student['university_name']; ?>
                 </p>
 
                 <hr>
 
                 <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
 
-                <p class="text-muted">Malibu, California</p>
+                <p class="text-muted"><?php echo $student['location_name']; ?>, <?php echo $student['parent_loc_name']; ?></p>
 
-                <hr>
+                <!-- <hr>
 
                 <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
 
@@ -93,9 +93,9 @@
 
                 <hr>
 
-                <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
+                <strong><i class="far fa-file-alt mr-1"></i> Biography</strong>
 
-                <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
+                <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p> -->
               </div>
               <!-- /.card-body -->
             </div>
