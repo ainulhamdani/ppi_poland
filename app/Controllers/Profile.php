@@ -33,7 +33,7 @@ class Profile extends IonAuthController
 		$this->data['statuses'] = $studentStatusModel->findAll();
 		$this->data['locations'] = $locationModel
 			->withSelect(['location.*','parent_loc.name as parent_loc_name'])
-			->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','parent_id')
+			->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','location.parent_id')
 			->withWhere('level',3)
 			->withOrderBy('parent_loc_name','DESC')->findAll();
 
@@ -41,7 +41,7 @@ class Profile extends IonAuthController
 			->withSelect(['major'])
 			->withGroupBy('major')
 			->findAll();
-			
+
 		$this->data['student'] = $studentModel
 		->withSelect(['student.*','users.fullname','users.nickname','users.email','university.name as university_name','student_status.description as student_status'])
 		->withJoin('users','id','user_id')
