@@ -68,17 +68,70 @@ class Home extends IonAuthController
 
 	public function users(){
 		$studentModel = model('App\Models\StudentModel');
+    $universityModel = model('App\Models\UniversityModel');
+    $locationModel = model('App\Models\LocationModel');
 
-		$this->data['students'] = $studentModel
-		->withSelect(['student.*','users.fullname','users.nickname','users.email','student_photo.name as photo','university.name as university_name',
-									'student_status.description as student_status','location.parent_id as parent_id','location.name as location_name','parent_loc.name as parent_loc_name'])
-		->withJoin('users','id','user_id')
-		->withJoin('university','id','university_id')
-		->withJoin('student_status','id','student_status_id')
-		->withJoin('student_photo','user_id','user_id')
-		->withJoin('location','id','location_id')
-		->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','location.parent_id')
-		->findAll();
+		$this->useSelect2('select2');
+
+		$this->data['universities'] = $universityModel->findAll();
+		$this->data['locations'] = $locationModel
+			->withSelect(['location.*','parent_loc.name as parent_loc_name'])
+			->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','location.parent_id')
+			->withWhere('level',3)
+			->withOrderBy('parent_loc_name','DESC')->findAll();
+
+
+
+		$nofilter = false;
+		if ($this->request->getGet()) {
+			$location_id = $this->request->getGet('location_id');
+			$university_id = $this->request->getGet('university_id');
+			if ($university_id && $university_id!='') {
+				$this->data['students'] = $studentModel
+				->withSelect(['student.*','users.fullname','users.nickname','users.email','student_photo.name as photo','university.name as university_name',
+											'student_status.description as student_status','location.parent_id as parent_id','location.name as location_name','parent_loc.name as parent_loc_name'])
+				->withJoin('users','id','user_id')
+				->withJoin('university','id','university_id')
+				->withJoin('student_status','id','student_status_id')
+				->withJoin('student_photo','user_id','user_id')
+				->withJoin('location','id','location_id')
+				->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','location.parent_id')
+				->withWhere('university_id',$university_id)
+				->findAll();
+				$this->data['university_id'] = $university_id;
+			} elseif ($location_id && $location_id!=''){
+				$this->data['students'] = $studentModel
+				->withSelect(['student.*','users.fullname','users.nickname','users.email','student_photo.name as photo','university.name as university_name',
+											'student_status.description as student_status','location.parent_id as parent_id','location.name as location_name','parent_loc.name as parent_loc_name'])
+				->withJoin('users','id','user_id')
+				->withJoin('university','id','university_id')
+				->withJoin('student_status','id','student_status_id')
+				->withJoin('student_photo','user_id','user_id')
+				->withJoin('location','id','location_id')
+				->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','location.parent_id')
+				->withWhere('location_id',$location_id)
+				->findAll();
+				$this->data['location_id'] = $location_id;
+			} else {
+				$nofilter = true;
+			}
+
+		} else {
+			$nofilter = true;
+		}
+
+		if ($nofilter) {
+			$this->data['students'] = $studentModel
+			->withSelect(['student.*','users.fullname','users.nickname','users.email','student_photo.name as photo','university.name as university_name',
+										'student_status.description as student_status','location.parent_id as parent_id','location.name as location_name','parent_loc.name as parent_loc_name'])
+			->withJoin('users','id','user_id')
+			->withJoin('university','id','university_id')
+			->withJoin('student_status','id','student_status_id')
+			->withJoin('student_photo','user_id','user_id')
+			->withJoin('location','id','location_id')
+			->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','location.parent_id')
+			->findAll();
+		}
 
 		echo view('admin/include/header');
 		echo view('admin/include/navbar');

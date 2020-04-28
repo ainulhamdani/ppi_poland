@@ -20,6 +20,43 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+
+        <div class="row" style="position: relative;">
+          <div class="col-md-5">
+            <form id="university-filter" method="get" action="/home/users">
+              <div class="form-group">
+                <label for="university">University</label>
+                <select name="university_id" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="university" style="width: 100%;">
+                  <option value=""> --- </option>
+                  <?php foreach ($universities as $university) { ?>
+                  <option value="<?php echo $university['id'] ?>" <?php echo isset($university_id)?($university['id']==$university_id?"selected":""):""; ?>><?php echo $university['name'] ?></option>
+                  <?php } ?>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-1 mb-3">
+            <label class="d-none d-sm-block" for="filter">&nbsp</label>
+            <button type="submit" form="university-filter" class="btn btn-primary">Filter</button>
+          </div>
+          <div class="col-md-5">
+            <form id="location-filter" method="get" action="/home/users">
+              <div class="form-group">
+                <label for="location">Location</label>
+                <select name="location_id" class="form-control select2 select2-danger" data-dropdown-css-class="select2-danger" id="location" style="width: 100%;">
+                  <option value=""> --- </option>
+                  <?php foreach ($locations as $location) { ?>
+                  <option value="<?php echo $location['id'] ?>" <?php echo isset($location_id)?($location['id']==$location_id?"selected":""):""; ?>><?php echo $location['parent_loc_name'].' - '.$location['name'] ?></option>
+                  <?php } ?>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-1 mb-3">
+            <label class="d-none d-sm-block" for="filter">&nbsp</label>
+            <button type="submit" form="location-filter" class="btn btn-primary">Filter</button>
+          </div>
+        </div>
         <div class="row">
           <?php foreach($students as $student): ?>
           <div class="col-md-3 mb-3">
