@@ -25,7 +25,7 @@
   <!-- /.login-logo -->
   <section class="content">
     <p>
-      Your registration is success. Please check your email to activate your account.
+      Your registration is success. Please check your email to activate your account. Please also check the spam folder, sometimes it goes there :)
     </p>
   </section>
 </div>
