@@ -1,7 +1,16 @@
 <?php foreach($posts as $post): ?>
 <!-- Post -->
-<div class="card">
+<div id="post_<?php echo $post['id'] ?>" class="card">
   <div class="card-body">
+    <?php if($post['user_id']==$user_id): ?>
+    <div class="card-header border-0">
+      <div class="card-tools">
+        <button type="button" class="btn bg-light btn-sm" data-id="<?php echo $post['id'] ?>" data-toggle="modal" data-target="#modal-delete">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <?php endif; ?>
     <div class="post">
       <div class="user-block">
         <?php if ($post['photo']) { ?>

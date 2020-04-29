@@ -136,6 +136,19 @@ class BaseController extends Controller
 		});
 	}
 
+	public function useSweetAlert2(){
+		Events::on('add_more_style', function() {
+				echo '
+				<!-- SweetAlert2 -->
+				<link rel="stylesheet" href="'.base_url().'/assets/theme/adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">';
+		});
+		Events::on('add_more_js', function() {
+				echo '
+				<!-- SweetAlert2 -->
+				<script src="'.base_url().'/assets/theme/adminlte/plugins/sweetalert2/sweetalert2.min.js"></script>';
+		});
+	}
+
 	public function useJQVMap(){
 		Events::on('add_more_style', function() {
 				echo '

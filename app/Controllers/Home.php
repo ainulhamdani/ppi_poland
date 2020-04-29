@@ -10,6 +10,7 @@ class Home extends IonAuthController
 	public function timeline(){
 		$this->useDropzone();
 		$this->useImageCompressor();
+		$this->useSweetAlert2();
 
 		echo view('admin/include/header');
 		echo view('admin/include/navbar');
@@ -52,6 +53,25 @@ class Home extends IonAuthController
 
 
 		echo view('admin/home/_get_posts', $this->data);
+	}
+
+	public function delete_post($post_id=0){
+		if ($this->request->getPost()&&$post_id!=0) {
+			$go_delete = $this->request->getPost('delete');
+			if ($go_delete) {
+				$postModel = model('App\Models\PostModel');
+				$post = $postModel->find($post_id);
+				if ($post['user_id']!=$this->data['user_id']) {
+					echo 'warning';
+					return;
+				} else {
+					if ($postModel->delete($post_id)) {
+						echo 'success';
+						return;
+					}
+				}
+			}
+		}
 	}
 
 	public function get_comments($post_id=0){
@@ -156,6 +176,9 @@ class Home extends IonAuthController
 	}
 
 	public function user($id=0){
+
+		$this->useSweetAlert2();
+
 		if ($id==0) {
 			$id = $this->ionAuth->getUserId();
 		}

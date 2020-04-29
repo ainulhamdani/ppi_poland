@@ -116,6 +116,29 @@
   </div>
   <!-- /.content-wrapper -->
 
+  <div class="modal fade" id="modal-delete">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-danger">
+        <div class="modal-header">
+          <h4 class="modal-title">Delete Post?</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="_name"></p>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-outline-light" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-outline-light" id="go_delete">Delete</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
   <?php \CodeIgniter\Events\Events::on('custom_script', function() { ?>
     <script type='text/javascript'>
       var post_count = 0;
@@ -193,5 +216,40 @@
       function like_post(post_id){
 
       }
+
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
+
+      $('#modal-delete').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var id = button.data('id')
+        var modal = $(this)
+
+        $('#go_delete').click(function() {
+          $.post( '/home/delete_post/'+id, { <?php echo csrf_token();?>: "<?php echo csrf_hash();?>", delete:true})
+          .done(function( data ) {
+            console.log(data);
+            if (data=='success') {
+              $('#post_'+id).CardWidget('remove')
+            } else if(data=='warning') {
+              Toast.fire({
+                icon: 'danger',
+                title: 'You are not authorized to do this!'
+              })
+            } else {
+              Toast.fire({
+                icon: 'warning',
+                title: 'Some error occurred. Try again.'
+              })
+            }
+
+            modal.modal('hide');
+          })
+        })
+      });
     </script>
   <?php });?>
