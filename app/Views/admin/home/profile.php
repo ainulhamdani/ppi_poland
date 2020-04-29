@@ -120,13 +120,10 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content bg-danger">
         <div class="modal-header">
-          <h4 class="modal-title">Delete Post?</h4>
+          <h4 class="modal-title">Delete <span id="_name">Post</span>?</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-        </div>
-        <div class="modal-body">
-          <p id="_name"></p>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-outline-light" data-dismiss="modal">No</button>
@@ -181,7 +178,7 @@
                       comment_count = parseInt(comment_count);
                       $( "#comment_count_"+post_id ).text(comment_count+1);
                     }
-                    $( "#comment_"+post_id ).append( data );
+                    $( "#comments_"+post_id ).append( data );
                 });
               }
             }
@@ -191,13 +188,13 @@
       }
 
       function get_comments(post_id){
-        if($( "#comment_"+post_id ).hasClass('has-data')){
-          $( "#comment_"+post_id ).toggle();
+        if($( "#comments_"+post_id ).hasClass('has-data')){
+          $( "#comments_"+post_id ).toggle();
         } else {
           $.get( "/home/get_comments/"+post_id, function( data ) {
             if (data!='empty') {
-              $( "#comment_"+post_id ).addClass('has-data');
-              $( "#comment_"+post_id ).append( data );
+              $( "#comments_"+post_id ).addClass('has-data');
+              $( "#comments_"+post_id ).append( data );
               $( "#view_comments_"+post_id ).hide();
             }
           });
@@ -207,8 +204,8 @@
 
       function view_comments(post_id){
         $.get( "/home/get_comments/"+post_id, function( data ) {
-          $( "#comment_"+post_id ).addClass('has-data');
-          $( "#comment_"+post_id ).append( data );
+          $( "#comments_"+post_id ).addClass('has-data');
+          $( "#comments_"+post_id ).append( data );
           $( "#view_comments_"+post_id ).hide();
         });
       }
@@ -227,14 +224,22 @@
       $('#modal-delete').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget)
         var id = button.data('id')
+        var post_id = button.data('post-id')
+        var title = button.data('header')
+        var url = button.attr('href')
         var modal = $(this)
+        modal.find('#_name').text(title)
 
         $('#go_delete').click(function() {
-          $.post( '/home/delete_post/'+id, { <?php echo csrf_token();?>: "<?php echo csrf_hash();?>", delete:true})
+          $.post( url, { <?php echo csrf_token();?>: "<?php echo csrf_hash();?>", delete:true})
           .done(function( data ) {
-            console.log(data);
             if (data=='success') {
-              $('#post_'+id).CardWidget('remove')
+              let comment_count = $( "#comment_count_"+post_id ).text();
+              if (comment_count!="") {
+                comment_count = parseInt(comment_count);
+                $( "#comment_count_"+post_id ).text(comment_count-1);
+              }
+              $('#'+id).remove()
             } else if(data=='warning') {
               Toast.fire({
                 icon: 'danger',

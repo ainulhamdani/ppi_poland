@@ -2,15 +2,6 @@
 <!-- Post -->
 <div id="post_<?php echo $post['id'] ?>" class="card">
   <div class="card-body">
-    <?php if($post['user_id']==$user_id): ?>
-    <div class="card-header border-0">
-      <div class="card-tools">
-        <button type="button" class="btn bg-light btn-sm" data-id="<?php echo $post['id'] ?>" data-toggle="modal" data-target="#modal-delete">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-    </div>
-    <?php endif; ?>
     <div class="post">
       <div class="user-block">
         <?php if ($post['photo']) { ?>
@@ -18,6 +9,13 @@
         <?php } else { ?>
           <img class="img-circle img-bordered-sm" src="<?php echo base_url()?>/assets/theme/adminlte/img/avatar.png" alt="user image">
         <?php } ?>
+        <?php if($post['user_id']==$user_id): ?>
+          <div class="card-tools float-right">
+            <a href="/home/delete_post/<?php echo $post['id'] ?>" type="button" class="btn bg-light btn-sm" data-header="Post" data-id="post_<?php echo $post['id'] ?>" data-toggle="modal" data-target="#modal-delete">
+              <i class="fas fa-times"></i>
+            </a>
+          </div>
+        <?php endif; ?>
         <span class="username">
           <a href="/home/user/<?php echo $post['user_id'] ?>"><?php echo $post['fullname'] ?></a>
         </span>
@@ -51,7 +49,7 @@
         </span>
       </p>
 
-      <div id="comment_<?php echo $post['id'] ?>">
+      <div id="comments_<?php echo $post['id'] ?>">
 
       </div>
       <?php if($post['comment_count']):?>
