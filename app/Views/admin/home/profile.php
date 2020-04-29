@@ -104,64 +104,8 @@
           <?php endif; ?>
 
           <!-- /.col -->
-          <div class="col-md-<?php echo $student?'9':'12' ?>">
-            <div class="card">
-              <div class="card-body">
-                <div class="tab-content">
-                  <div class="active tab-pane" id="activity">
-                    <?php foreach($posts as $post): ?>
-                    <!-- Post -->
-                    <div class="post">
-                      <div class="user-block">
-                        <?php if ($post['photo']) { ?>
-                          <img class="img-circle img-bordered-sm" src="<?php echo base_url().'/assets/uploads/profile_pictures/'.$post['photo']?>" alt="" style="object-fit: cover;">
-                        <?php } else { ?>
-                          <img class="img-circle img-bordered-sm" src="<?php echo base_url()?>/assets/theme/adminlte/img/avatar.png" alt="user image">
-                        <?php } ?>
-                        <span class="username">
-                          <a href="/home/user/<?php echo $post['user_id'] ?>"><?php echo $post['fullname'] ?></a>
-                        </span>
-                        <span class="description"><?php echo $post['created_at'] ?></span>
-                      </div>
-                      <!-- /.user-block -->
+          <div id="the_posts" data-id="<?php echo isset($student)?$student['user_id']:'1'; ?>" class="col-md-<?php echo $student?'9':'12' ?>">
 
-                      <?php if($post['attach_count']): ?>
-                      <div class="row mb-3">
-                        <?php
-                        $attachments = explode(',',$post['attachment']);
-                        foreach($attachments as $attachment):
-                        ?>
-                        <div class="col-sm-6">
-                          <img class="img-fluid mb-3" src="<?php echo base_url()?>/assets/uploads/posts/<?php echo $post['user_id'] ?>/<?php echo $attachment?>" alt="Photo">
-                        </div>
-                        <?php endforeach; ?>
-                      </div>
-                    <?php endif; ?>
-
-                      <p>
-                        <?php echo $post['content'] ?>
-                      </p>
-
-                      <p>
-                        <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a> <?php echo $post['likes_count']?' - '.$post['likes_count'].' people like this':'' ?>
-                        <span class="float-right">
-                          <a href="#" class="link-black text-sm">
-                            <i class="far fa-comments mr-1"></i> Comments (<?php echo $post['comment_count']?$post['comment_count']:'0' ?>)
-                          </a>
-                        </span>
-                      </p>
-
-                      <input class="form-control form-control-sm" type="text" placeholder="Type a comment">
-                    </div>
-                  <?php endforeach; ?>
-
-                  </div>
-
-                </div>
-                <!-- /.tab-content -->
-              </div><!-- /.card-body -->
-            </div>
-            <!-- /.nav-tabs-custom -->
           </div>
           <!-- /.col -->
         </div>
@@ -171,3 +115,83 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+
+  <?php \CodeIgniter\Events\Events::on('custom_script', function() { ?>
+    <script type='text/javascript'>
+      var post_count = 0;
+      var total_count = 0;
+      $( document ).ready(function() {
+        var user_id = $( "#the_posts" ).data('id');
+        $.get( "/api/get_post_count", function( data ) {
+          total_count = data.post_count;
+        }, "json" );
+        $.get( "/home/get_posts/10/0/"+user_id, function( data ) {
+          $( "#the_posts" ).append( data );
+          attach_comment_event();
+        });
+        $(window).on('scroll', function() {
+            if( $(window).scrollTop() + $(window).height() == $(document).height() && post_count < total_count) {
+              post_count = post_count+10;
+              $.get( "/home/get_posts/10/"+post_count+"/"+user_id, function( data ) {
+                $( "#the_posts" ).append( data );
+                attach_comment_event();
+              });
+            }
+        });
+      });
+
+      function attach_comment_event(){
+        $('.comment_text:not(.enter-bound)').each(function(index){
+          let post_id = $(this).data('post-id');
+          let text_box = $(this);
+          text_box.addClass('enter-bound');
+          text_box.keypress(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+              if ($.trim(text_box.val())!="") {
+                let comment = text_box.val();
+                $.post( "/home/add_comment", { <?php echo csrf_token();?>: "<?php echo csrf_hash();?>", post_id: post_id, comment: comment })
+                  .done(function( data ) {
+                    text_box.val('');
+                    let comment_count = $( "#comment_count_"+post_id ).text();
+                    if (comment_count!="") {
+                      comment_count = parseInt(comment_count);
+                      $( "#comment_count_"+post_id ).text(comment_count+1);
+                    }
+                    $( "#comment_"+post_id ).append( data );
+                });
+              }
+            }
+            event.stopPropagation();
+          });
+        });
+      }
+
+      function get_comments(post_id){
+        if($( "#comment_"+post_id ).hasClass('has-data')){
+          $( "#comment_"+post_id ).toggle();
+        } else {
+          $.get( "/home/get_comments/"+post_id, function( data ) {
+            if (data!='empty') {
+              $( "#comment_"+post_id ).addClass('has-data');
+              $( "#comment_"+post_id ).append( data );
+              $( "#view_comments_"+post_id ).hide();
+            }
+          });
+        }
+
+      }
+
+      function view_comments(post_id){
+        $.get( "/home/get_comments/"+post_id, function( data ) {
+          $( "#comment_"+post_id ).addClass('has-data');
+          $( "#comment_"+post_id ).append( data );
+          $( "#view_comments_"+post_id ).hide();
+        });
+      }
+
+      function like_post(post_id){
+
+      }
+    </script>
+  <?php });?>

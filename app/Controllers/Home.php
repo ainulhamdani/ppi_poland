@@ -18,7 +18,7 @@ class Home extends IonAuthController
 		echo view('admin/include/footer');
 	}
 
-	public function get_posts($limit=10, $offset=0){
+	public function get_posts($limit=10, $offset=0, $user_id=0){
 		$postModel = model('App\Models\PostModel');
 		$postLikesModel = model('App\Models\PostLikesModel');
 		$postAttachmentModel = model('App\Models\PostAttachmentModel');
@@ -27,15 +27,30 @@ class Home extends IonAuthController
 		$this->useDropzone();
 		$this->useImageCompressor();
 
-		$this->data['posts'] = $postModel
-				->withSelect(['post.*','users.fullname','student_photo.name as photo','post_comment.comment_count','post_likes.likes_count','post_attachment.attach_count','post_attachment.attachment'])
-				->withJoin('users','id','user_id')
-				->withJoin('student_photo','user_id','user_id')
-				->withCustomJoin('(SELECT post_id, count(id) as comment_count FROM post_comment GROUP BY post_id) as post_comment','post_comment','post_id','post.id')
-				->withCustomJoin('(SELECT post_id, count(id) as likes_count FROM post_likes GROUP BY post_id) as post_likes','post_likes','post_id','post.id')
-				->withCustomJoin("(SELECT post_id, count(id) as attach_count, GROUP_CONCAT(name SEPARATOR ',') as attachment FROM post_attachment GROUP BY post_id) as post_attachment",'post_attachment','post_id','post.id')
-				->withOrderBy('created_at','DESC')
-				->findAll($limit,$offset);
+		if (!$user_id==0) {
+			$this->data['posts'] = $postModel
+					->withSelect(['post.*','users.fullname','student_photo.name as photo','post_comment.comment_count','post_likes.likes_count','post_attachment.attach_count','post_attachment.attachment'])
+					->withJoin('users','id','user_id')
+					->withJoin('student_photo','user_id','user_id')
+					->withCustomJoin('(SELECT post_id, count(id) as comment_count FROM post_comment GROUP BY post_id) as post_comment','post_comment','post_id','post.id')
+					->withCustomJoin('(SELECT post_id, count(id) as likes_count FROM post_likes GROUP BY post_id) as post_likes','post_likes','post_id','post.id')
+					->withCustomJoin("(SELECT post_id, count(id) as attach_count, GROUP_CONCAT(name SEPARATOR ',') as attachment FROM post_attachment GROUP BY post_id) as post_attachment",'post_attachment','post_id','post.id')
+					->withWhere('post.user_id', $user_id)
+					->withOrderBy('created_at','DESC')
+					->findAll($limit,$offset);
+		} else {
+			$this->data['posts'] = $postModel
+					->withSelect(['post.*','users.fullname','student_photo.name as photo','post_comment.comment_count','post_likes.likes_count','post_attachment.attach_count','post_attachment.attachment'])
+					->withJoin('users','id','user_id')
+					->withJoin('student_photo','user_id','user_id')
+					->withCustomJoin('(SELECT post_id, count(id) as comment_count FROM post_comment GROUP BY post_id) as post_comment','post_comment','post_id','post.id')
+					->withCustomJoin('(SELECT post_id, count(id) as likes_count FROM post_likes GROUP BY post_id) as post_likes','post_likes','post_id','post.id')
+					->withCustomJoin("(SELECT post_id, count(id) as attach_count, GROUP_CONCAT(name SEPARATOR ',') as attachment FROM post_attachment GROUP BY post_id) as post_attachment",'post_attachment','post_id','post.id')
+					->withOrderBy('created_at','DESC')
+					->findAll($limit,$offset);
+		}
+
+
 		echo view('admin/home/_get_posts', $this->data);
 	}
 
