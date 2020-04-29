@@ -26,9 +26,17 @@
   <div class="card">
     <div class="card-body login-card-body">
       <p class="login-box-msg">Sign in to start your session</p>
-      <div id="infoMessage"><?php echo isset($message)?$message:'';?></div>
       <form action="/auth/authenticate" method="post">
         <?php echo csrf_field() ?>
+        <?php if(isset($message)): ?>
+        <div class="input-group mb-3">
+          <div class="alert alert-warning alert-dismissible" style="width:100%">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5><i class="icon fas fa-exclamation-triangle"></i> Alert!</h5>
+            <?php echo $message[0]; ?>
+          </div>
+        </div>
+        <?php endif; ?>
         <div class="input-group mb-3">
           <input name="username" type="text" class="form-control" placeholder="Email" required>
           <div class="input-group-append">

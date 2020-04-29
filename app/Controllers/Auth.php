@@ -11,8 +11,9 @@ class Auth extends IonAuthController
 				return redirect()->to('/');
 			}
 		}
-		// var_dump($this->session->getFlashdata());
-		echo view('admin/login');
+		$this->data['message'] = $this->session->getFlashdata('message');
+		
+		echo view('admin/login',	$this->data);
 	}
 
 	public function register(){
@@ -42,7 +43,7 @@ class Auth extends IonAuthController
 			{
 				// if the login was un-successful
 				// redirect them back to the login page
-				$this->session->setFlashdata('message', $this->ionAuth->errors($this->validationListTemplate));
+				$this->session->setFlashdata('message', $this->ionAuth->getErrors());
 				// use redirects instead of loading views for compatibility with MY_Controller libraries
 				return redirect()->back()->withInput();
 			}
