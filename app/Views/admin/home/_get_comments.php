@@ -1,5 +1,5 @@
 <?php foreach($comments as $comment): ?>
-  <div id="comment_<?php echo $comment['id'] ?>" class="card">
+  <div id="comment_<?php echo $comment['id'] ?>" class="card pt-2">
 
     <div class="comment ml-3">
       <div class="user-block">
