@@ -53,7 +53,7 @@ class Profile extends IonAuthController
 		// var_dump($this->data['student']);exit;
 
     echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar_profile', $this->data);
 		echo view('admin/profile/general', $this->data);
 		echo view('admin/include/footer');
@@ -98,7 +98,7 @@ class Profile extends IonAuthController
 		->first();
 
     echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar_profile', $this->data);
 		echo view('admin/profile/photo', $this->data);
 		echo view('admin/include/footer');

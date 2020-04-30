@@ -44,19 +44,14 @@
 
                 <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">
-                    <b>Followers</b> <a class="float-right"><?php echo $student['followers_count']?$student['followers_count']:0; ?></a>
+                    <b>Followers</b> <a class="float-right">0</a>
                   </li>
                   <li class="list-group-item">
-                    <b>Following</b> <a class="float-right"><?php echo $student['following_count']?$student['following_count']:0; ?></a>
+                    <b>Following</b> <a class="float-right">0</a>
                   </li>
                 </ul>
-                <?php if($student['user_id']!=$user_id): ?>
-                  <?php if($student['follow']==null): ?>
-                    <a id="follow_button" href="/home/follow_user/<?php echo $student['user_id']; ?>?follow=1" class="btn btn-primary btn-block"><b>Follow</b></a>
-                  <?php else: ?>
-                    <a id="unfollow_button" href="/home/follow_user/<?php echo $student['user_id']; ?>?follow=0" class="btn btn-danger btn-block"><b>Unfollow</b></a>
-                  <?php endif; ?>
-                <?php endif; ?>
+
+                <!-- <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a> -->
               </div>
               <!-- /.card-body -->
             </div>
@@ -107,7 +102,90 @@
 
           <!-- /.col -->
           <div id="the_posts" data-id="<?php echo isset($student)?$student['user_id']:'1'; ?>" class="col-md-<?php echo $student?'9':'12' ?>">
+            <?php foreach($posts as $post): ?>
+            <!-- Post -->
+            <div id="post_<?php echo $post['id'] ?>" class="card">
+              <div class="card-body">
+                <div class="post">
+                  <div class="user-block">
+                    <?php if ($post['photo']) { ?>
+                      <img class="img-circle img-bordered-sm" src="<?php echo base_url().'/assets/uploads/profile_pictures/'.$post['photo']?>" alt="" style="object-fit: cover;">
+                    <?php } else { ?>
+                      <img class="img-circle img-bordered-sm" src="<?php echo base_url()?>/assets/theme/adminlte/img/avatar.png" alt="user image">
+                    <?php } ?>
+                    <?php if($post['user_id']==$user_id): ?>
+                      <div class="card-tools float-right">
+                        <a href="/home/delete_post/<?php echo $post['id'] ?>" type="button" class="btn bg-light btn-sm" data-header="Post" data-id="post_<?php echo $post['id'] ?>" data-toggle="modal" data-target="#modal-delete">
+                          <i class="fas fa-times"></i>
+                        </a>
+                      </div>
+                    <?php endif; ?>
+                    <span class="username">
+                      <a href="/home/user/<?php echo $post['user_id'] ?>"><?php echo $post['fullname'] ?></a>
+                    </span>
+                    <span class="description"><?php echo $post['created_at'] ?></span>
+                  </div>
+                  <!-- /.user-block -->
 
+                  <?php if($post['attach_count']): ?>
+                  <div class="row mb-3">
+                    <?php
+                    $attachments = explode(',',$post['attachment']);
+                    foreach($attachments as $attachment):
+                    ?>
+                    <div class="col-sm-6">
+                      <img class="img-fluid mb-3" src="<?php echo base_url()?>/assets/uploads/posts/<?php echo $post['user_id'] ?>/<?php echo $attachment?>" alt="Photo">
+                    </div>
+                    <?php endforeach; ?>
+                  </div>
+                <?php endif; ?>
+
+                  <p>
+                    <?php echo $post['content'] ?>
+                  </p>
+                  <hr>
+                  <p>
+                    <a onclick="like_post(<?php echo $post['id'] ?>)" class="link-black text-sm" style="cursor:pointer">&nbsp</a>
+                    <span class="float-right">
+                      <a class="link-black text-sm" onclick="get_comments(<?php echo $post['id'] ?>)" style="cursor:pointer">
+                        <i class="far fa-comments mr-1"></i> <span id="comment_count_<?php echo $post['id'] ?>"><?php echo $post['comment_count']?$post['comment_count']:0 ?></span> Comments
+                      </a>
+                    </span>
+                  </p>
+
+                  <div id="comments_<?php echo $post['id'] ?>">
+                    <?php foreach($comments as $comment): ?>
+                      <div id="comment_<?php echo $comment['id'] ?>" class="card pt-2">
+
+                        <div class="comment ml-3">
+                          <div class="user-block">
+                            <?php if ($comment['photo']) { ?>
+                              <img class="img-circle img-bordered-sm" src="<?php echo base_url().'/assets/uploads/profile_pictures/'.$comment['photo']?>" alt="" style="object-fit: cover;">
+                            <?php } else { ?>
+                              <img class="img-circle img-bordered-sm" src="<?php echo base_url()?>/assets/theme/adminlte/img/avatar.png" alt="user image">
+                            <?php } ?>
+                            <?php if($comment['user_id']==$user_id): ?>
+                              <div class="card-tools float-right">
+                                <a href="/home/delete_comment/<?php echo $comment['id'] ?>" type="button" class="btn bg-light btn-sm" data-header="Comment" data-id="comment_<?php echo $comment['id'] ?>" data-post-id="<?php echo $comment['post_id'] ?>" data-toggle="modal" data-target="#modal-delete">
+                                  <i class="fas fa-times"></i>
+                                </a>
+                              </div>
+                            <?php endif; ?>
+                            <span class="username">
+                              <a href="/home/user/<?php echo $comment['user_id'] ?>"><?php echo $comment['fullname'] ?></a>
+                            </span>
+                            <span class="ml-2"><?php echo $comment['comment'] ?></span>
+                          </div>
+                        </div>
+                      </div>
+                    <?php endforeach; ?>
+                  </div>
+                  <input data-post-id="<?php echo $post['id'] ?>" class="comment_text form-control form-control-sm" type="text" placeholder="Type a comment">
+                </div>
+              </div><!-- /.card-body -->
+            </div>
+            <!-- /.post -->
+            <?php endforeach; ?>
           </div>
           <!-- /.col -->
         </div>
@@ -140,78 +218,6 @@
 
   <?php \CodeIgniter\Events\Events::on('custom_script', function() { ?>
     <script type='text/javascript'>
-      var post_count = 0;
-      var total_count = 0;
-      $( document ).ready(function() {
-        var user_id = $( "#the_posts" ).data('id');
-        $.get( "/api/get_post_count", function( data ) {
-          total_count = data.post_count;
-        }, "json" );
-        $.get( "/home/get_posts/10/0/"+user_id, function( data ) {
-          $( "#the_posts" ).append( data );
-          attach_comment_event();
-        });
-        $(window).on('scroll', function() {
-            if( $(window).scrollTop() + $(window).height() == $(document).height() && post_count < total_count) {
-              post_count = post_count+10;
-              $.get( "/home/get_posts/10/"+post_count+"/"+user_id, function( data ) {
-                $( "#the_posts" ).append( data );
-                attach_comment_event();
-              });
-            }
-        });
-      });
-
-      function attach_comment_event(){
-        $('.comment_text:not(.enter-bound)').each(function(index){
-          let post_id = $(this).data('post-id');
-          let text_box = $(this);
-          text_box.addClass('enter-bound');
-          text_box.keypress(function(event){
-            var keycode = (event.keyCode ? event.keyCode : event.which);
-            if(keycode == '13'){
-              if ($.trim(text_box.val())!="") {
-                let comment = text_box.val();
-                $.post( "/home/add_comment", { <?php echo csrf_token();?>: "<?php echo csrf_hash();?>", post_id: post_id, comment: comment })
-                  .done(function( data ) {
-                    text_box.val('');
-                    let comment_count = $( "#comment_count_"+post_id ).text();
-                    if (comment_count!="") {
-                      comment_count = parseInt(comment_count);
-                      $( "#comment_count_"+post_id ).text(comment_count+1);
-                    }
-                    $( "#comments_"+post_id ).append( data );
-                });
-              }
-            }
-            event.stopPropagation();
-          });
-        });
-      }
-
-      function get_comments(post_id){
-        if($( "#comments_"+post_id ).hasClass('has-data')){
-          $( "#comments_"+post_id ).toggle();
-        } else {
-          $.get( "/home/get_comments/"+post_id, function( data ) {
-            if (data!='empty') {
-              $( "#comments_"+post_id ).addClass('has-data');
-              $( "#comments_"+post_id ).append( data );
-              $( "#view_comments_"+post_id ).hide();
-            }
-          });
-        }
-
-      }
-
-      function view_comments(post_id){
-        $.get( "/home/get_comments/"+post_id, function( data ) {
-          $( "#comments_"+post_id ).addClass('has-data');
-          $( "#comments_"+post_id ).append( data );
-          $( "#view_comments_"+post_id ).hide();
-        });
-      }
-
       function like_post(post_id){
 
       }

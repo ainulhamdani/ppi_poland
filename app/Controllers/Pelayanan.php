@@ -5,7 +5,7 @@ class Pelayanan extends BaseController
 	public function index()
 	{
 		echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar');
 		echo view('admin/index');
 		echo view('admin/include/footer');
@@ -14,7 +14,7 @@ class Pelayanan extends BaseController
     public function e_ktp()
     {
         echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar');
 		echo view('admin/index');
 		echo view('admin/include/footer');
@@ -23,7 +23,7 @@ class Pelayanan extends BaseController
     public function kia()
     {
         echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar');
 		echo view('admin/index');
 		echo view('admin/include/footer');
@@ -32,7 +32,7 @@ class Pelayanan extends BaseController
     public function kartu_keluarga()
     {
         echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar');
 		echo view('admin/index');
 		echo view('admin/include/footer');
@@ -41,7 +41,7 @@ class Pelayanan extends BaseController
     public function akta_kelahiran()
     {
         echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar');
 		echo view('admin/index');
 		echo view('admin/include/footer');
@@ -50,7 +50,7 @@ class Pelayanan extends BaseController
     public function akta_perkawinan()
     {
         echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar');
 		echo view('admin/index');
 		echo view('admin/include/footer');
@@ -59,7 +59,7 @@ class Pelayanan extends BaseController
     public function akta_cerai()
     {
         echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar');
 		echo view('admin/index');
 		echo view('admin/include/footer');
@@ -68,7 +68,7 @@ class Pelayanan extends BaseController
     public function akta_kematian()
     {
         echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar');
 		echo view('admin/index');
 		echo view('admin/include/footer');
@@ -77,7 +77,7 @@ class Pelayanan extends BaseController
     public function pindah_datang()
     {
         echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar');
 		echo view('admin/index');
 		echo view('admin/include/footer');
@@ -86,7 +86,7 @@ class Pelayanan extends BaseController
     public function legalisir()
     {
         echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar');
 		echo view('admin/index');
 		echo view('admin/include/footer');

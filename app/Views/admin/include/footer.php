@@ -34,6 +34,21 @@
 
 <?php \CodeIgniter\Events\Events::trigger('custom_script'); ?>
 
+<script>
+$(document).ready(function() {
+    $(".notification").click(function(e) {
+        e.preventDefault()
+        var url = $(this).attr('href')
+        var id = $(this).data('id')
+        $.post( '/home/read_notification/'+id, { <?php echo csrf_token();?>: "<?php echo csrf_hash();?>", read:true})
+        .done(function( data ) {
+          if (data=='success') {
+            window.location = url;
+          }
+        })
+    });
+});
+</script>
 
 </body>
 </html>

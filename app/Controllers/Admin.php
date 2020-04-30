@@ -9,7 +9,7 @@ class Admin extends IonAuthController
 
 	public function overview(){
 		echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar_admin', $this->data);
 		echo view('admin/index');
 		echo view('admin/include/footer');
@@ -54,7 +54,7 @@ class Admin extends IonAuthController
       $view = 'admin/admin/university';
     }
     echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar_admin', $this->data);
     echo view($view, $this->data);
 		echo view('admin/include/footer');
@@ -115,7 +115,7 @@ class Admin extends IonAuthController
       $view = 'admin/admin/student';
     }
     echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar_admin', $this->data);
     echo view($view, $this->data);
 		echo view('admin/include/footer');
@@ -164,7 +164,7 @@ class Admin extends IonAuthController
       $view = 'admin/admin/kepengurusan';
     }
 		echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar_admin', $this->data);
 		echo view($view, $this->data);
 		echo view('admin/include/footer');
@@ -213,7 +213,7 @@ class Admin extends IonAuthController
       $view = 'admin/admin/jabatan';
     }
     echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar_admin', $this->data);
     echo view($view, $this->data);
 		echo view('admin/include/footer');
@@ -298,7 +298,7 @@ class Admin extends IonAuthController
       $view = 'admin/admin/pengurus';
     }
 		echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar_admin', $this->data);
 		echo view($view, $this->data);
 		echo view('admin/include/footer');
@@ -318,7 +318,7 @@ class Admin extends IonAuthController
 
 		$view = 'admin/admin/email_setting';
 		echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar_admin', $this->data);
 		echo view($view, $this->data);
 		echo view('admin/include/footer');
@@ -376,7 +376,7 @@ class Admin extends IonAuthController
     }
 
 		echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar_admin', $this->data);
 		echo view($view, $this->data);
 		echo view('admin/include/footer');

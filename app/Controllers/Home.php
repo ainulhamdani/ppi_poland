@@ -13,7 +13,7 @@ class Home extends IonAuthController
 		$this->useSweetAlert2();
 
 		echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar', $this->data);
 		echo view('admin/home/timeline', $this->data);
 		echo view('admin/include/footer');
@@ -121,6 +121,34 @@ class Home extends IonAuthController
 		echo view('admin/home/_get_comments', $this->data);
 	}
 
+	public function read_notification($id=0){
+		if ($this->request->getPost()&&$id!=0) {
+			$go_read = $this->request->getPost('read');
+			if ($go_read) {
+				$notificationModel = model('App\Models\NotificationModel');
+				$notification = $notificationModel->find($id);
+				if ($notification['user_to']!=$this->data['user_id']) {
+					echo 'warning';
+					return;
+				} else {
+					$notifs = $notificationModel
+						->withWhere('notification_type_id', $notification['notification_type_id'])
+						->withWhere('user_to', $notification['user_to'])
+						->withWhere('user_from', $notification['user_from'])
+						->withWhere('post_id', $notification['post_id'])
+						->withWhere('is_read', 0)
+						->findAll();
+					foreach ($notifs as $notif) {
+						$notif['is_read'] = 1;
+						$notificationModel->save($notif);
+					}
+					echo 'success';
+					return;
+				}
+			}
+		}
+	}
+
 	public function users(){
 		$studentModel = model('App\Models\StudentModel');
     $universityModel = model('App\Models\UniversityModel');
@@ -189,7 +217,7 @@ class Home extends IonAuthController
 		}
 
 		echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar', $this->data);
 		echo view('admin/home/users', $this->data);
 		echo view('admin/include/footer');
@@ -215,16 +243,40 @@ class Home extends IonAuthController
 
 		$this->data['student'] = $studentModel
 		->withSelect(['student.*','users.fullname','users.nickname','users.email','student_photo.name as photo','university.name as university_name',
-									'student_status.description as student_status','location.parent_id as parent_id','location.name as location_name','parent_loc.name as parent_loc_name'])
+									'student_status.description as student_status','location.parent_id as parent_id','location.name as location_name',
+									'parent_loc.name as parent_loc_name','user_follow.follow','followers.count as followers_count','following.count as following_count'])
 		->withJoin('users','id','user_id')
 		->withJoin('university','id','university_id')
 		->withJoin('student_status','id','student_status_id')
 		->withJoin('student_photo','user_id','user_id')
 		->withJoin('location','id','location_id')
+		->withCustomJoin('(SELECT * FROM user_follow WHERE user_id = '.$this->data['user_id'].') as user_follow','user_follow','follow','student.user_id')
 		->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','location.parent_id')
+		->withCustomJoin('(SELECT COUNT(id) as count, follow FROM user_follow GROUP BY follow) as followers','followers','follow','student.user_id')
+		->withCustomJoin('(SELECT COUNT(id) as count, user_id FROM user_follow GROUP BY user_id) as following','following','user_id','student.user_id')
 		->withWhere('student.user_id',$id)
 		->first();
 
+		echo view('admin/include/header');
+		echo view('admin/include/navbar', $this->data);
+		echo view('admin/include/sidebar', $this->data);
+		echo view('admin/home/profile', $this->data);
+		echo view('admin/include/footer');
+	}
+
+	public function post($post_id=0){
+		if ($post_id==0) {
+			return redirect()->to('/home/timeline');
+		}
+
+		$this->useSweetAlert2();
+
+		$postModel = model('App\Models\PostModel');
+		$postLikesModel = model('App\Models\PostLikesModel');
+		$postAttachmentModel = model('App\Models\PostAttachmentModel');
+		$postCommentModel = model('App\Models\PostCommentModel');
+
+		$this->data['student'] = null;
 
 		$this->data['posts'] = $postModel
 				->withSelect(['post.*','users.fullname','student_photo.name as photo','post_comment.comment_count','post_likes.likes_count','post_attachment.attach_count','post_attachment.attachment'])
@@ -233,14 +285,24 @@ class Home extends IonAuthController
 				->withCustomJoin('(SELECT post_id, count(id) as comment_count FROM post_comment GROUP BY post_id) as post_comment','post_comment','post_id','post.id')
 				->withCustomJoin('(SELECT post_id, count(id) as likes_count FROM post_likes GROUP BY post_id) as post_likes','post_likes','post_id','post.id')
 				->withCustomJoin("(SELECT post_id, count(id) as attach_count, GROUP_CONCAT(name SEPARATOR ',') as attachment FROM post_attachment GROUP BY post_id) as post_attachment",'post_attachment','post_id','post.id')
-				->withWhere('post.user_id',$id)
+				->withWhere('post.id',$post_id)
 				->withOrderBy('created_at','DESC')
-				->findAll(10);
+				->findAll();
+
+		if (count($this->data['posts'])==0) {
+			return redirect()->to('/home/timeline');
+		}
+
+		$this->data['comments'] = $postCommentModel
+			->withSelect(['post_comment.*','users.fullname','student_photo.name as photo'])
+			->withJoin('users','id','user_id')
+			->withJoin('student_photo','user_id','user_id')
+			->withWhere('post_id',$post_id)->findAll();
 
 		echo view('admin/include/header');
-		echo view('admin/include/navbar');
+		echo view('admin/include/navbar', $this->data);
 		echo view('admin/include/sidebar', $this->data);
-		echo view('admin/home/profile', $this->data);
+		echo view('admin/home/single_post', $this->data);
 		echo view('admin/include/footer');
 	}
 
@@ -291,9 +353,52 @@ class Home extends IonAuthController
 				$postData = $this->request->getPost();
 				$postData['user_id'] =  $this->ionAuth->getUserId();
 				$commentId = $postCommentModel->insert($postData);
+				$comment = $postCommentModel
+					->withSelect(['post_comment.*','post.user_id as user_to'])
+					->withJoin('post','id','post_id')
+					->find($commentId);
+				$this->save_notification(2,$comment['user_to'],$comment['user_id'],$comment['post_id'],$comment['id']);
 				$this->get_comment($commentId);
 			}
 		}
+	}
+
+	public function follow_user($user_id=0){
+		if ($user_id==0) {
+			return redirect()->to('/home/timeline');
+		}
+		if ($user_id==$this->data['user_id']) {
+			return redirect()->to('/home/user/'.$user_id);
+		}
+
+		if ($this->request->getGet()) {
+			$userFollowModel = model('App\Models\UserFollowModel');
+			$follow = $this->request->getGet('follow');
+			$data['user_id'] = $this->data['user_id'];
+			$data['follow'] = $user_id;
+			if ($follow=='1') {
+				$userFollowModel->save($data);
+				$this->save_notification(8,$user_id,$this->data['user_id']);
+			} else {
+				$rowFollow = $userFollowModel
+					->withWhere('user_id', $this->data['user_id'])
+					->withWhere('follow', $user_id)
+					->first();
+				$userFollowModel->delete($rowFollow['id']);
+			}
+		}
+
+		return redirect()->to('/home/user/'.$user_id);
+	}
+
+	private function save_notification($type, $to, $from, $post_id=null, $comment_id=null){
+		$notificationModel = model('App\Models\NotificationModel');
+		$data['notification_type_id'] = $type;
+		$data['user_to'] = $to;
+		$data['user_from'] = $from;
+		$data['post_id'] = $post_id;
+		$data['comment_id'] = $comment_id;
+		return $notificationModel->save($data);
 	}
 
 }

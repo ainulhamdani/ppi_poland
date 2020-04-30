@@ -77,12 +77,26 @@ class IonAuthController extends BaseController
 
 		if ($this->ionAuth->loggedIn()) {
 			$photoModel = model('App\Models\StudentPhotoModel');
+			$notificationModel = model('App\Models\NotificationModel');
+			$notificationTypeModel = model('App\Models\NotificationTypeModel');
+
+			$notificationTypes = $notificationTypeModel->findAll();
+
 			$this->data['username'] = $this->session->get('nickname');
 			$this->data['fullname'] = $this->session->get('fullname');
 			$this->data['user_id'] = $this->ionAuth->getUserId();
 			$this->data['is_active'] =  $this->ionAuth->where('id', $this->ionAuth->getUserId())->users()->row()->active;
 			$this->data['is_admin'] = $this->ionAuth->isAdmin($this->ionAuth->getUserId());
 			$this->data['photo'] = $photoModel->withWhere('user_id',$this->ionAuth->getUserId())->first();
+
+			$this->data['notifications'] = $notificationModel
+				->withSelect(['notification.*','MIN(is_read) as is_read','MAX(comment_id) as comment_id','notification_type.*','users.fullname as from','notification.id as id'])
+				->withJoin('notification_type','id','notification_type_id')
+				->withJoin('users','id','user_from')
+				->withWhere('is_read', 0)
+				->withWhere('user_to', $this->data['user_id'])
+				->withGroupBy('notification_type_id,user_to,user_from,post_id')
+				->findAll();
 		}
 	}
 }
