@@ -105,7 +105,7 @@
       var post_count = 0;
       var total_count = 0;
       $( document ).ready(function() {
-        $.get( "/api/get_post_count", function( data ) {
+        $.get( "/api/post/get_post_count", function( data ) {
           total_count = data.post_count;
         }, "json" );
         $.get( "/home/get_posts", function( data ) {

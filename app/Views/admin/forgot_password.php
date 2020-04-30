@@ -82,7 +82,7 @@ $( document ).ready(function() {
     if (stop) {
       event.preventDefault();
       var datastring = $("#forgot_form").serializeArray();
-      $.get('/api/check_email?email='+datastring[1].value , function(response){
+      $.get('/api/email/check_email?email='+datastring[1].value , function(response){
         console.log(response)
         if (!response.exist) {
           Toast.fire({

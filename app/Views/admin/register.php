@@ -125,7 +125,7 @@ $( document ).ready(function() {
           title: 'Password not match'
         })
       }else{
-        $.get('/api/check_email?email='+datastring[3].value , function(response){
+        $.get('/api/email/check_email?email='+datastring[3].value , function(response){
           if (response.exist) {
             Toast.fire({
               icon: 'warning',
