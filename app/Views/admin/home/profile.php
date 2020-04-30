@@ -144,7 +144,7 @@
       var total_count = 0;
       $( document ).ready(function() {
         var user_id = $( "#the_posts" ).data('id');
-        $.get( "/api/post/get_post_count/"+user_id, function( data ) {
+        $.get( "/home/get_post_count/"+user_id, function( data ) {
           total_count = data.post_count;
         }, "json" );
         $.get( "/home/get_posts/10/0/"+user_id, function( data ) {
