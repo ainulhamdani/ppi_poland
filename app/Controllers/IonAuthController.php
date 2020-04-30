@@ -90,12 +90,24 @@ class IonAuthController extends BaseController
 			$this->data['photo'] = $photoModel->withWhere('user_id',$this->ionAuth->getUserId())->first();
 
 			$this->data['notifications'] = $notificationModel
-				->withSelect(['notification.*','MIN(is_read) as is_read','MAX(comment_id) as comment_id','notification_type.*','users.fullname as from','notification.id as id'])
+				->withSelect(['notification.id',
+						'MAX(notification_type_id) as notification_type_id',
+						'MAX(user_to) as user_to',
+						'MAX(user_from) as user_from',
+						'MAX(post_id) as post_id',
+						'MAX(comment_id) as comment_id',
+						'MIN(is_read) as is_read',
+						'MAX(created_at) as created_at',
+						'MAX(notification_type.name) as name',
+						'MAX(notification_type.content) as content',
+						'MAX(notification_type.url) as url',
+						'MAX(notification_type.options) as options',
+						'users.fullname as from'])
 				->withJoin('notification_type','id','notification_type_id')
 				->withJoin('users','id','user_from')
 				->withWhere('is_read', 0)
 				->withWhere('user_to', $this->data['user_id'])
-				->withGroupBy('notification_type_id,user_to,user_from,post_id')
+				->withGroupBy('id,notification_type_id,user_to,user_from,post_id,users.fullname')
 				->findAll();
 		}
 	}
