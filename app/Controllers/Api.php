@@ -5,10 +5,15 @@ class Api extends IonAuthController
 {
 	use ResponseTrait;
 
-	public function get_post_count()
+	public function get_post_count($user_id=null)
 	{
     $postModel = model('App\Models\PostModel');
-    $count = $postModel->withSelectCount('id','post_count')->first();
+		if ($user_id) {
+			$count['post_count'] = $postModel->withWhere('user_id',$user_id)->countAllResults();
+		} else {
+			$count['post_count'] = $postModel->countAll();
+		}
+
     echo json_encode($count);
   }
 

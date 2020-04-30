@@ -1,3 +1,8 @@
+<?php if(count($posts)==0): ?>
+<div class="card">
+  <div class="card-body">There is no post yet.</div>
+</div>
+<?php endif; ?>
 <?php foreach($posts as $post): ?>
 <!-- Post -->
 <div id="post_<?php echo $post['id'] ?>" class="card">
