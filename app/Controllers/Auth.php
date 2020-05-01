@@ -219,13 +219,14 @@ class Auth extends IonAuthController
 			$userModel = model('App\Models\UserModel');
 			$email    = strtolower($this->request->getGet('email'));
 			if($userModel->withSelect('id')->withWhere('email', $email)->first()){
-				// echo 'exist';
-				return $this->respond(['exist'=> true]);
+				echo json_encode(['exist'=> true]);
+				return;
 			} else {
-				return $this->respond(['exist'=> false]);
+				echo json_encode(['exist'=> false]);
+				return;
 			}
 		}
-		return $this->respond(['exist'=> false]);
+		echo json_encode(['exist'=> false]);
 	}
 
 	public function _send_email($to, $content, $subject){
