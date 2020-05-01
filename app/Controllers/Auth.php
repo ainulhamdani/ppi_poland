@@ -12,7 +12,7 @@ class Auth extends IonAuthController
 			}
 		}
 		$this->data['message'] = $this->session->getFlashdata('message');
-		
+
 		echo view('admin/login',	$this->data);
 	}
 
@@ -92,9 +92,9 @@ class Auth extends IonAuthController
 
 	public function confirmation(){
 		if ($this->request->getGet())	{
-			$code = $this->request->getGet('confirmation_token');
-			$id = substr($code, -1);
-			$code = substr($code, 0, -1);
+			$code = explode('-',$this->request->getGet('confirmation_token'));
+			$id = $code[1];
+			$code = $code[0];
 
 			$activation = $this->ionAuth->activate($id, $code);
 
@@ -212,6 +212,20 @@ class Auth extends IonAuthController
 				$this->_send_email($data['email'], view('admin/email/verify', $data), 'Verify your account');
 			}
 		}
+	}
+
+	public function check_email(){
+		if ($this->request->getGet()){
+			$userModel = model('App\Models\UserModel');
+			$email    = strtolower($this->request->getGet('email'));
+			if($userModel->withSelect('id')->withWhere('email', $email)->first()){
+				// echo 'exist';
+				return $this->respond(['exist'=> true]);
+			} else {
+				return $this->respond(['exist'=> false]);
+			}
+		}
+		return $this->respond(['exist'=> false]);
 	}
 
 	public function _send_email($to, $content, $subject){
