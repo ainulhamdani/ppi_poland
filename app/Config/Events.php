@@ -46,5 +46,5 @@ Events::on('pre_system', function () {
 });
 
 Events::on('add_google_analytics_tag', function() {
-		echo Config\JWTConfig::$TAG;
+		echo \Config\GAnalytics::$TAG;
 });
