@@ -87,7 +87,7 @@
         maxWidth: 512,
         maxHeight: 512,
         convertSize: 0,
-        quality: .5,
+        quality: .9,
         success(result) {
           const formData = new FormData();
           formData.append('<?php echo csrf_token();?>', '<?php echo csrf_hash();?>');
