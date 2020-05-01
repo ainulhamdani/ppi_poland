@@ -183,7 +183,6 @@
         addRemoveLinks: true,
         dictDefaultMessage: 'Click to choose or drop your image',
         uploadMultiple: true,
-        resizeQuality: 0.5,
         maxFiles: 5,
         parallelUploads: 5,
         acceptedFiles: 'image/png, image/jpeg',
@@ -191,6 +190,32 @@
         autoProcessQueue: false,
         paramName: "post_photo",
         maxFilesize: 10,
+        transformFile: function(file, done) {
+           const imageCompressor = new ImageCompressor();
+
+           imageCompressor.compress(file, {
+           // I assume the output image won't have the meta data anymore
+           checkOrientation: true,
+           // Limit output image width & height
+           // For controllable file size & avoid blank output image
+           // https://github.com/xkeshi/image-compressor#maxwidth
+           maxWidth: 8192,
+           maxHeight: 8192,
+           // 0.8 is the default and already good enough
+           // https://github.com/xkeshi/image-compressor#quality
+           quality: 0.3,
+           // Convert ALL PNG images to JPEG
+           convertSize: 0,
+           })
+           .then((result) => {
+             // Handle the compressed image file.
+             done(result)
+           })
+           .catch((err) => {
+             // Handle the error
+             throw err
+           })
+        },
         init: function () {
           let myDropzone = this;
 
