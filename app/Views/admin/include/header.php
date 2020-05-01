@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <?php \CodeIgniter\Events\Events::trigger('add_google_analytics_tag'); ?>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>PPI Polandia | Dashboard</title>
