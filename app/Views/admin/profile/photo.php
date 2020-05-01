@@ -84,6 +84,9 @@
       let user_id = document.getElementById('user_id');
       let photo = document.getElementById("photofile").files[0];
       new ImageCompressor(photo, {
+        maxWidth: 512,
+        maxHeight: 512,
+        convertSize: 0,
         quality: .5,
         success(result) {
           const formData = new FormData();

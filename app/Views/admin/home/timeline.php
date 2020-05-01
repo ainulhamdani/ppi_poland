@@ -199,8 +199,8 @@
            // Limit output image width & height
            // For controllable file size & avoid blank output image
            // https://github.com/xkeshi/image-compressor#maxwidth
-           maxWidth: 8192,
-           maxHeight: 8192,
+           maxWidth: 2048,
+           maxHeight: 2048,
            // 0.8 is the default and already good enough
            // https://github.com/xkeshi/image-compressor#quality
            quality: 0.3,
