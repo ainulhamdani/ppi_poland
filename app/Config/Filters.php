@@ -12,6 +12,7 @@ class Filters extends BaseConfig
 		'honeypot' => \CodeIgniter\Filters\Honeypot::class,
 		'ionAuth' => \App\Filters\IonAuth::class,
 		'ionAdmin' => \App\Filters\IonAdmin::class,
+		'GA' => \App\Filters\GAFilter::class,
 	];
 
 	// Always applied before every request
@@ -19,6 +20,7 @@ class Filters extends BaseConfig
 		'before' => [
 			//'honeypot'
 			'csrf' => ['except' => ['home/*','api/*']],
+			'GA' => ['except' => ['api/*']],
 		],
 		'after'  => [
 			'toolbar',

@@ -44,7 +44,3 @@ Events::on('pre_system', function () {
 		Services::toolbar()->respond();
 	}
 });
-
-Events::on('add_google_analytics_tag', function() {
-		echo \Config\GAnalytics::$TAG;
-});
