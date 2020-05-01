@@ -340,6 +340,7 @@ class Home extends IonAuthController
 							$attachData['name'] = $name;
 							$postAttachmentModel->insert($attachData);
 						}
+						$this->save_follow_user_notification($postId);
 						echo $postId;
 						return;
 					}
@@ -348,6 +349,7 @@ class Home extends IonAuthController
 				$postData = $this->request->getPost();
 				$postData['user_id'] =  $this->ionAuth->getUserId();
 				$postId = $postModel->insert($postData);
+				$this->save_follow_user_notification($postId);
 				echo $postId;
 				return;
 			}
@@ -369,6 +371,8 @@ class Home extends IonAuthController
 					->withJoin('post','id','post_id')
 					->find($commentId);
 				$this->save_notification(2,$comment['user_to'],$comment['user_id'],$comment['post_id'],$comment['id']);
+				$this->save_follow_post_notification(3,$comment['user_id'],$comment['post_id'],$comment['id']);
+				$this->follow_post($this->data['user_id'], $comment['post_id']);
 				$this->get_comment($commentId);
 			}
 		}
@@ -402,6 +406,20 @@ class Home extends IonAuthController
 		return redirect()->to('/home/user/'.$user_id);
 	}
 
+	private function follow_post($user_id, $post_id){
+		$postFollowModel = model('App\Models\PostFollowModel');
+		$data = $postFollowModel
+			->withWhere('user_id', $user_id)
+			->withWhere('post_id', $post_id)
+			->first();
+		if (!$data) {
+			$data = [];
+			$data['user_id'] = $user_id;
+			$data['post_id'] = $post_id;
+			return $postFollowModel->save($data);
+		}
+	}
+
 	private function save_notification($type, $to, $from, $post_id=null, $comment_id=null){
 		$notificationModel = model('App\Models\NotificationModel');
 		$data['notification_type_id'] = $type;
@@ -410,6 +428,51 @@ class Home extends IonAuthController
 		$data['post_id'] = $post_id;
 		$data['comment_id'] = $comment_id;
 		return $notificationModel->save($data);
+	}
+
+	private function save_follow_user_notification($post_id){
+		$userFollowModel = model('App\Models\UserFollowModel');
+		$notificationModel = model('App\Models\NotificationModel');
+
+		$tos = $userFollowModel
+			->withWhere('follow', $this->data['user_id'])
+			->findAll();
+			if ($tos) {
+				$dataBatch = [];
+				foreach ($tos as $to) {
+					$data['notification_type_id'] = 1;
+					$data['user_to'] = $to['user_id'];
+					$data['user_from'] = $this->data['user_id'];
+					$data['post_id'] = $post_id;
+					$data['created_at'] = date("Y-m-d H:i:s");
+					$dataBatch[] = $data;
+				}
+				return $notificationModel->insertBatch($dataBatch);
+			}
+	}
+
+	private function save_follow_post_notification($type, $from, $post_id=null, $comment_id=null){
+		$postFollowModel = model('App\Models\PostFollowModel');
+		$notificationModel = model('App\Models\NotificationModel');
+
+		$tos = $postFollowModel
+			->withWhere('post_id', $post_id)
+			->withWhere('user_id !=', $this->data['user_id'])
+			->findAll();
+
+		if ($tos) {
+			$dataBatch = [];
+			foreach ($tos as $to) {
+				$data['notification_type_id'] = $type;
+				$data['user_to'] = $to['user_id'];
+				$data['user_from'] = $from;
+				$data['post_id'] = $post_id;
+				$data['comment_id'] = $comment_id;
+				$data['created_at'] = date("Y-m-d H:i:s");
+				$dataBatch[] = $data;
+			}
+			return $notificationModel->insertBatch($dataBatch);
+		}
 	}
 
 }

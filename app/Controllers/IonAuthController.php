@@ -108,6 +108,7 @@ class IonAuthController extends BaseController
 				->withWhere('is_read', 0)
 				->withWhere('user_to', $this->data['user_id'])
 				->withGroupBy('id,notification_type_id,user_to,user_from,post_id,users.fullname')
+				->withOrderBy('created_at','DESC')
 				->findAll();
 		}
 	}
