@@ -55,6 +55,17 @@ class Home extends IonAuthController
 		echo view('admin/home/_get_posts', $this->data);
 	}
 
+	public function get_post_count($user_id=null)	{
+    $postModel = model('App\Models\PostModel');
+		if ($user_id) {
+			$count['post_count'] = $postModel->withWhere('user_id',$user_id)->countAllResults();
+		} else {
+			$count['post_count'] = $postModel->countAll();
+		}
+
+    echo json_encode($count);
+  }
+
 	public function delete_post($post_id=0){
 		if ($this->request->getPost()&&$post_id!=0) {
 			$go_delete = $this->request->getPost('delete');
