@@ -421,13 +421,15 @@ class Home extends IonAuthController
 	}
 
 	private function save_notification($type, $to, $from, $post_id=null, $comment_id=null){
-		$notificationModel = model('App\Models\NotificationModel');
-		$data['notification_type_id'] = $type;
-		$data['user_to'] = $to;
-		$data['user_from'] = $from;
-		$data['post_id'] = $post_id;
-		$data['comment_id'] = $comment_id;
-		return $notificationModel->save($data);
+		if ($to!=$from) {
+			$notificationModel = model('App\Models\NotificationModel');
+			$data['notification_type_id'] = $type;
+			$data['user_to'] = $to;
+			$data['user_from'] = $from;
+			$data['post_id'] = $post_id;
+			$data['comment_id'] = $comment_id;
+			return $notificationModel->save($data);
+		}
 	}
 
 	private function save_follow_user_notification($post_id){
