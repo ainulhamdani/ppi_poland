@@ -54,6 +54,7 @@ class Autoload extends \CodeIgniter\Config\AutoloadConfig
 			APP_NAMESPACE => APPPATH,                // For custom namespace
 			'Config'      => APPPATH . 'Config',
 			'IonAuth' 		=> APPPATH,
+			'Firebase'    => APPPATH . 'ThirdParty/Firebase',
 		];
 
 		/**
