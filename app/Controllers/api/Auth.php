@@ -41,6 +41,7 @@ class Auth extends IonAuthController
 				return $this->respond(['error' => true, 'message' => 'Wrong username or password'], 401);
 			}
     }
+		return $this->respond(['error' => true, 'message' => 'Missing username or password'], 401);
   }
 
 }
