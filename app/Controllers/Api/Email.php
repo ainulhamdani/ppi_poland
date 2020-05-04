@@ -1,4 +1,4 @@
-<?php namespace App\Controllers;
+<?php namespace App\Controllers\Api;
 
 use App\Controllers\IonAuthController;
 use CodeIgniter\API\ResponseTrait;
