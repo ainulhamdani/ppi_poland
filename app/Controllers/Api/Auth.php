@@ -34,6 +34,7 @@ class Auth extends IonAuthController
 
         $jwt = JWT::encode($payload, JWTConfig::$KEY);
         $data = ['message' => 'Access granted', 'token' => $jwt];
+				$this->ionAuth->logout();
         return $this->respond($data, 200);
 			}
 			else
@@ -41,7 +42,7 @@ class Auth extends IonAuthController
 				return $this->respond(['error' => true, 'message' => 'Wrong username or password'], 401);
 			}
     }
-		return $this->respond(['error' => true, 'message' => 'Missing username or password'], 401);
+		return $this->respond(['error' => true, 'message' => 'Missing username or password'], 400);
   }
 
 	public function do_register(){
@@ -79,31 +80,6 @@ class Auth extends IonAuthController
 		}
 	}
 
-	public function confirmation(){
-		if ($this->request->getGet())	{
-			$code = explode('-',$this->request->getGet('confirmation_token'));
-			$id = $code[1];
-			$code = $code[0];
-
-			$activation = $this->ionAuth->activate($id, $code);
-
-			if ($activation)
-			{
-				return $this->response->setJSON(['success'=> true]);
-			}
-			else
-			{
-				$this->response->setStatusCode(400, 'Bad Request');
-				return $this->response->setJSON(['redirect' => 'forgot_password']);
-			}
-
-		}
-		else {
-			$this->response->setStatusCode(400, 'Bad Request');
-			return $this->response->setJSON(['redirect' => 'login']);
-		}
-	}
-
 	public function forgot_password(){
 		if ($this->request->getPost())	{
 			$identityColumn = $this->configIonAuth->identity;
@@ -127,6 +103,21 @@ class Auth extends IonAuthController
 
 		$this->response->setStatusCode(400, 'Bad Request');
 		return $this->response->setJSON(['redirect' => 'forgot_password']);
+	}
+
+	public function logout(){
+		if (isset($this->request->user)) {
+			$userJwtModel = model('App\Models\UserJwtModel');
+			$jwt = $userJwtModel
+				->withWhere('user_id', $this->request->user->user_id)
+				->withWhere('token', $this->request->user->token)
+				->first();
+
+			if($jwt)
+				$userJwtModel->delete($jwt['id']);
+		}
+
+		return $this->response->setJSON(['success'=> true]);
 	}
 
 	private function _send_email($to, $content, $subject){

@@ -55,7 +55,7 @@ class Post extends IonAuthController
 			if ($go_delete) {
 				$postModel = model('App\Models\PostModel');
 				$post = $postModel->find($post_id);
-				if ($post['user_id']!=$this->data['user_id']) {
+				if ($post['user_id']!=$this->request->user->user_id) {
 					return $this->response->setStatusCode(403, 'Not authenticate');
 				} else {
 					if ($postModel->delete($post_id)) {
@@ -73,7 +73,7 @@ class Post extends IonAuthController
 				if ($go_delete) {
 					$postCommentModel = model('App\Models\PostCommentModel');
 					$comment = $postCommentModel->find($comment_id);
-					if ($comment['user_id']!=$this->data['user_id']) {
+					if ($comment['user_id']!=$this->request->user->user_id) {
 						return $this->response->setStatusCode(403, 'Not authenticate');
 					} else {
 						if ($postCommentModel->delete($comment_id)) {
@@ -118,7 +118,7 @@ class Post extends IonAuthController
 				if ($go_read) {
 					$notificationModel = model('App\Models\NotificationModel');
 					$notification = $notificationModel->find($id);
-					if ($notification['user_to']!=$this->data['user_id']) {
+					if ($notification['user_to']!=$this->request->user->user_id) {
 						return $this->response->setStatusCode(403, 'Not authenticate');
 					} else {
 						$notifs = $notificationModel
@@ -210,7 +210,7 @@ class Post extends IonAuthController
 		public function user($id=0){
 
 			if ($id==0) {
-				$id = $this->ionAuth->getUserId();
+				$id = $this->request->user->user_id;
 			}
 
 			$postModel = model('App\Models\PostModel');
@@ -232,7 +232,7 @@ class Post extends IonAuthController
 			->withJoin('student_status','id','student_status_id')
 			->withJoin('student_photo','user_id','user_id')
 			->withJoin('location','id','location_id')
-			->withCustomJoin('(SELECT * FROM user_follow WHERE user_id = '.$this->data['user_id'].') as user_follow','user_follow','follow','student.user_id')
+			->withCustomJoin('(SELECT * FROM user_follow WHERE user_id = '.$this->request->user->user_id.') as user_follow','user_follow','follow','student.user_id')
 			->withCustomJoin('(SELECT location.id,location.name FROM location) as parent_loc','parent_loc','id','location.parent_id')
 			->withCustomJoin('(SELECT COUNT(id) as count, follow FROM user_follow GROUP BY follow) as followers','followers','follow','student.user_id')
 			->withCustomJoin('(SELECT COUNT(id) as count, user_id FROM user_follow GROUP BY user_id) as following','following','user_id','student.user_id')
@@ -279,14 +279,14 @@ class Post extends IonAuthController
 		}
 
 		public function add_post(){
-			if ($this->data['is_active']) {
+			if ($this->ionAuth->where('id', $this->request->user->user_id)->users()->row()->active) {
 				$postModel = model('App\Models\PostModel');
 				$postAttachmentModel = model('App\Models\PostAttachmentModel');
 
 				if ($this->request->getFiles()) {
 					$files = $this->request->getFileMultiple('post_photo');
 					$postData = $this->request->getPost();
-					$postData['user_id'] =  $this->ionAuth->getUserId();
+					$postData['user_id'] =  $this->request->user->user_id;
 					if ($files) {
 						$postId = $postModel->insert($postData);
 						if ($postId) {
@@ -307,7 +307,7 @@ class Post extends IonAuthController
 					}
 				} elseif($this->request->getPost()){
 					$postData = $this->request->getPost();
-					$postData['user_id'] =  $this->ionAuth->getUserId();
+					$postData['user_id'] =  $this->request->user->user_id;
 					$postId = $postModel->insert($postData);
 					$this->save_follow_user_notification($postId);
 					return $this->response->setJSON(['post_id' => $postId]);
@@ -321,11 +321,11 @@ class Post extends IonAuthController
 		}
 
 		public function add_comment(){
-			if ($this->data['is_active']) {
+			if ($this->ionAuth->where('id', $this->request->user->user_id)->users()->row()->active) {
 				$postCommentModel = model('App\Models\PostCommentModel');
 				if ($this->request->getPost()) {
 					$postData = $this->request->getPost();
-					$postData['user_id'] =  $this->ionAuth->getUserId();
+					$postData['user_id'] =  $this->request->user->user_id;
 					$commentId = $postCommentModel->insert($postData);
 					$comment = $postCommentModel
 						->withSelect(['post_comment.*','post.user_id as user_to'])
@@ -333,7 +333,7 @@ class Post extends IonAuthController
 						->find($commentId);
 					$this->save_notification(2,$comment['user_to'],$comment['user_id'],$comment['post_id'],$comment['id']);
 					$this->save_follow_post_notification(3,$comment['user_id'],$comment['post_id'],$comment['id']);
-					$this->follow_post($this->data['user_id'], $comment['post_id']);
+					$this->follow_post($this->request->user->user_id, $comment['post_id']);
 					$this->get_comment($commentId);
 					return $this->response->setJSON(['comment_id' => $commentId]);
 				}
@@ -347,7 +347,7 @@ class Post extends IonAuthController
 				$this->response->setStatusCode(400, 'Bad Request');
 				return $this->response->setJSON(['redirect' => 'timeline']);
 			}
-			if ($user_id==$this->data['user_id']) {
+			if ($user_id==$this->request->user->user_id) {
 				$this->response->setStatusCode(400, 'Bad Request');
 				return $this->response->setJSON(['redirect' => 'user','user_id' => $user_id]);
 			}
@@ -355,15 +355,15 @@ class Post extends IonAuthController
 			if ($this->request->getPost()) {
 				$userFollowModel = model('App\Models\UserFollowModel');
 				$follow = $this->request->getPost('follow');
-				$data['user_id'] = $this->data['user_id'];
+				$data['user_id'] = $this->request->user->user_id;
 				$data['follow'] = $user_id;
 				if ($follow=='1') {
 					$userFollowModel->save($data);
-					$this->save_notification(8,$user_id,$this->data['user_id']);
+					$this->save_notification(8,$user_id,$this->request->user->user_id);
 					return $this->response->setJSON(['followed' => true]);
 				} else {
 					$rowFollow = $userFollowModel
-						->withWhere('user_id', $this->data['user_id'])
+						->withWhere('user_id', $this->request->user->user_id)
 						->withWhere('follow', $user_id)
 						->first();
 					$userFollowModel->delete($rowFollow['id']);
@@ -406,14 +406,14 @@ class Post extends IonAuthController
 			$notificationModel = model('App\Models\NotificationModel');
 
 			$tos = $userFollowModel
-				->withWhere('follow', $this->data['user_id'])
+				->withWhere('follow', $this->request->user->user_id)
 				->findAll();
 				if ($tos) {
 					$dataBatch = [];
 					foreach ($tos as $to) {
 						$data['notification_type_id'] = 1;
 						$data['user_to'] = $to['user_id'];
-						$data['user_from'] = $this->data['user_id'];
+						$data['user_from'] = $this->request->user->user_id;
 						$data['post_id'] = $post_id;
 						$data['created_at'] = date("Y-m-d H:i:s");
 						$dataBatch[] = $data;
@@ -428,7 +428,7 @@ class Post extends IonAuthController
 
 			$tos = $postFollowModel
 				->withWhere('post_id', $post_id)
-				->withWhere('user_id !=', $this->data['user_id'])
+				->withWhere('user_id !=', $this->request->user->user_id)
 				->findAll();
 
 			if ($tos) {
