@@ -105,6 +105,20 @@ class Auth extends IonAuthController
 		return $this->response->setJSON(['redirect' => 'forgot_password']);
 	}
 
+	public function user_data(){
+		if (isset($this->request->user)) {
+			$userModel = model('App\Models\UserModel');
+			$user = $userModel
+				->withSelect(['users.id','users.email','users.active','users.nickname','users.fullname','student_photo.name as photo'])
+				->withJoin('student_photo','user_id','id')
+				->withWhere('users.id', $this->request->user->user_id)
+				->first();
+			return $this->response->setJSON($user);
+		} else {
+			return $this->response->setStatusCode(403, 'Not authenticate');
+		}
+	}
+
 	public function logout(){
 		if (isset($this->request->user)) {
 			$userJwtModel = model('App\Models\UserJwtModel');

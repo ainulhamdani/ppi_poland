@@ -40,6 +40,6 @@ class Filters extends BaseConfig
 	public $filters = [
 		'ionAuth' => ['before' => ['home/*', 'admin/*', 'profile/*']],
 		'ionAdmin' => ['before' => ['admin/*']],
-		'JWTFilter' => ['before' => ['api/auth/logout','api/post/*','api/email/*','api/profile/*']],
+		'JWTFilter' => ['before' => ['api/auth/logout','api/auth/user_data','api/post/*','api/email/*','api/profile/*']],
 	];
 }
