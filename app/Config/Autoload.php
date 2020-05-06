@@ -55,6 +55,7 @@ class Autoload extends \CodeIgniter\Config\AutoloadConfig
 			'Config'      => APPPATH . 'Config',
 			'IonAuth' 		=> APPPATH,
 			'Firebase'    => APPPATH . 'ThirdParty/Firebase',
+			'Pusher'      => APPPATH . 'ThirdParty/Pusher',
 		];
 
 		/**
