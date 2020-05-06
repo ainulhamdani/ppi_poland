@@ -423,12 +423,16 @@ class Home extends IonAuthController
 	private function save_notification($type, $to, $from, $post_id=null, $comment_id=null){
 		if ($to!=$from) {
 			$userModel = model('App\Models\UserModel');
-			$user_from = $userModel->withSelect('fullname')->find($from)['fullname'];
+			$user_from = $userModel->withSelect(['users.fullname','student_photo.name as photo'])
+				->withJoin('student_photo','user_id','id')
+				->withWhere('users.id', $from)
+				->first();
 
 			$notificationTypeModel = model('App\Models\NotificationTypeModel');
 			$notifMessage = $notificationTypeModel->find($type);
 
-			$pusher['message'] = vsprintf($notifMessage['content'], [$user_from]);
+			$pusher['message'] = vsprintf($notifMessage['content'], [$user_from['fullname']]);
+			$pusher['photo'] = $user_from['photo'];
 			$pusher['post_id'] = $post_id;
 			$pusher['comment_id'] = $comment_id;
 			$this->pusher->trigger('notification-channel-'.$to, $notifMessage['name'], $pusher);
@@ -454,12 +458,16 @@ class Home extends IonAuthController
 				$dataBatch = [];
 				foreach ($tos as $to) {
 					$userModel = model('App\Models\UserModel');
-					$user_from = $userModel->withSelect('fullname')->find($this->data['user_id'])['fullname'];
+					$user_from = $userModel->withSelect(['users.fullname','student_photo.name as photo'])
+						->withJoin('student_photo','user_id','id')
+						->withWhere('users.id', $this->data['user_id'])
+						->first();
 
 					$notificationTypeModel = model('App\Models\NotificationTypeModel');
 					$notifMessage = $notificationTypeModel->find(1);
 
-					$pusher['message'] = vsprintf($notifMessage['content'], [$user_from]);
+					$pusher['message'] = vsprintf($notifMessage['content'], [$user_from['fullname']]);
+					$pusher['photo'] = $user_from['photo'];
 					$pusher['post_id'] = $post_id;
 					$this->pusher->trigger('notification-channel-'.$to['user_id'], $notifMessage['name'], $pusher);
 
@@ -487,12 +495,16 @@ class Home extends IonAuthController
 			$dataBatch = [];
 			foreach ($tos as $to) {
 				$userModel = model('App\Models\UserModel');
-				$user_from = $userModel->withSelect('fullname')->find($this->data['user_id'])['fullname'];
+				$user_from = $userModel->withSelect(['users.fullname','student_photo.name as photo'])
+					->withJoin('student_photo','user_id','id')
+					->withWhere('users.id', $this->data['user_id'])
+					->first();
 
 				$notificationTypeModel = model('App\Models\NotificationTypeModel');
 				$notifMessage = $notificationTypeModel->find($type);
 
-				$pusher['message'] = vsprintf($notifMessage['content'], [$user_from]);
+				$pusher['message'] = vsprintf($notifMessage['content'], [$user_from['fullname']]);
+				$pusher['photo'] = $user_from['photo'];
 				$pusher['post_id'] = $post_id;
 				$pusher['comment_id'] = $comment_id;
 				$this->pusher->trigger('notification-channel-'.$to['user_id'], $notifMessage['name'], $pusher);
