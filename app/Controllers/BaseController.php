@@ -16,6 +16,8 @@ namespace App\Controllers;
 
 use CodeIgniter\Controller;
 use CodeIgniter\Events\Events;
+use Pusher;
+use \Config\PusherConfig;
 
 class BaseController extends Controller
 {
@@ -42,6 +44,18 @@ class BaseController extends Controller
 		//--------------------------------------------------------------------
 		// E.g.:
 		$this->session = \Config\Services::session();
+
+		$options = array(
+	    'cluster' => PusherConfig::$cluster,
+	    'useTLS' => PusherConfig::$useTLS
+	  );
+
+	  $this->pusher = new Pusher\Pusher(
+	    PusherConfig::$key,
+	    PusherConfig::$secret,
+	    PusherConfig::$app_id,
+	    $options
+	  );
 
 	}
 

@@ -391,6 +391,17 @@ class Post extends IonAuthController
 
 		private function save_notification($type, $to, $from, $post_id=null, $comment_id=null){
 			if ($to!=$from) {
+				$userModel = model('App\Models\UserModel');
+				$user_from = $userModel->withSelect('fullname')->find($from)['fullname'];
+
+				$notificationTypeModel = model('App\Models\NotificationTypeModel');
+				$notifMessage = $notificationTypeModel->find($type);
+
+				$pusher['message'] = vsprintf($notifMessage['content'], [$user_from]);
+				$pusher['post_id'] = $post_id;
+				$pusher['comment_id'] = $comment_id;
+				$this->pusher->trigger('notification-channel-'.$to, $notifMessage['name'], $pusher);
+				
 				$notificationModel = model('App\Models\NotificationModel');
 				$data['notification_type_id'] = $type;
 				$data['user_to'] = $to;
@@ -411,6 +422,16 @@ class Post extends IonAuthController
 				if ($tos) {
 					$dataBatch = [];
 					foreach ($tos as $to) {
+						$userModel = model('App\Models\UserModel');
+						$user_from = $userModel->withSelect('fullname')->find($this->data['user_id'])['fullname'];
+
+						$notificationTypeModel = model('App\Models\NotificationTypeModel');
+						$notifMessage = $notificationTypeModel->find(1);
+
+						$pusher['message'] = vsprintf($notifMessage['content'], [$user_from]);
+						$pusher['post_id'] = $post_id;
+						$this->pusher->trigger('notification-channel-'.$to['user_id'], $notifMessage['name'], $pusher);
+
 						$data['notification_type_id'] = 1;
 						$data['user_to'] = $to['user_id'];
 						$data['user_from'] = $this->request->user->user_id;
@@ -434,6 +455,17 @@ class Post extends IonAuthController
 			if ($tos) {
 				$dataBatch = [];
 				foreach ($tos as $to) {
+					$userModel = model('App\Models\UserModel');
+					$user_from = $userModel->withSelect('fullname')->find($this->data['user_id'])['fullname'];
+
+					$notificationTypeModel = model('App\Models\NotificationTypeModel');
+					$notifMessage = $notificationTypeModel->find($type);
+
+					$pusher['message'] = vsprintf($notifMessage['content'], [$user_from]);
+					$pusher['post_id'] = $post_id;
+					$pusher['comment_id'] = $comment_id;
+					$this->pusher->trigger('notification-channel-'.$to['user_id'], $notifMessage['name'], $pusher);
+
 					$data['notification_type_id'] = $type;
 					$data['user_to'] = $to['user_id'];
 					$data['user_from'] = $from;
