@@ -417,16 +417,24 @@ class Post extends IonAuthController
 		}
 
 		private function save_follow_user_notification($post_id){
+			$userModel = model('App\Models\UserModel');
 			$userFollowModel = model('App\Models\UserFollowModel');
 			$notificationModel = model('App\Models\NotificationModel');
 
-			$tos = $userFollowModel
-				->withWhere('follow', $this->request->user->user_id)
-				->findAll();
+			if ($this->data['user_id']==1) {
+				$tos = $userModel
+					->withSelect(['id as user_id'])
+					->withWhere('id !=', 1)
+					->findAll();
+			} else {
+				$tos = $userFollowModel
+					->withWhere('follow', $this->request->user->user_id)
+					->findAll();
+			}
+
 				if ($tos) {
 					$dataBatch = [];
 					foreach ($tos as $to) {
-						$userModel = model('App\Models\UserModel');
 						$user_from = $userModel->withSelect(['users.fullname','student_photo.name as photo'])
 							->withJoin('student_photo','user_id','id')
 							->withWhere('users.id', $this->data['user_id'])
