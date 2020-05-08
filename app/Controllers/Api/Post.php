@@ -139,6 +139,39 @@ class Post extends IonAuthController
 			return $this->response->setStatusCode(400, 'Bad Request');
 		}
 
+		public function get_notifications($limit=10, $offset=0){
+			if ($this->request->getPost()) {
+				$user_id = $this->request->getPost("user_id");
+				$notificationModel = model('App\Models\NotificationModel');
+
+				$this->data['notifications'] = $notificationModel
+					->withSelect(['notification.id',
+							'MAX(notification_type_id) as notification_type_id',
+							'MAX(user_to) as user_to',
+							'MAX(user_from) as user_from',
+							'MAX(post_id) as post_id',
+							'MAX(comment_id) as comment_id',
+							'MIN(is_read) as is_read',
+							'MAX(notification.created_at) as created_at',
+							'MAX(notification_type.name) as name',
+							'MAX(notification_type.content) as content',
+							'MAX(student_photo.name) as photo',
+							'users.fullname as from'])
+					->withJoin('notification_type','id','notification_type_id')
+					->withJoin('users','id','user_from')
+					->withJoin('student_photo','user_id','user_from')
+					->withWhere('user_to', $user_id)
+					->withGroupBy('id,notification_type_id,user_to,user_from,post_id,users.fullname')
+					->withOrderBy('created_at','DESC')
+					->findAll($limit,$offset);
+
+					return $this->response->setJSON($this->data['notifications']);
+			}
+
+			return $this->response->setStatusCode(400, 'Bad Request');
+
+		}
+
 		public function users(){
 			$studentModel = model('App\Models\StudentModel');
 	    $universityModel = model('App\Models\UniversityModel');
