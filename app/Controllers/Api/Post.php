@@ -139,6 +139,24 @@ class Post extends IonAuthController
 			return $this->response->setStatusCode(400, 'Bad Request');
 		}
 
+		public function get_notification_count(){
+			if ($this->request->getPost()) {
+				$user_id = $this->request->getPost("user_id");
+				$notificationModel = model('App\Models\NotificationModel');
+
+				$data = $notificationModel
+					->withSelect(['notification.id'])
+					->withWhere('user_to', $user_id)
+					->withGroupBy('id,notification_type_id,user_to,user_from,post_id')
+					->withOrderBy('created_at','DESC')
+					->findAll();
+
+					return $this->response->setJSON(['post_count'=>count($data)]);
+			}
+
+			return $this->response->setStatusCode(400, 'Bad Request');
+		}
+
 		public function get_notifications($limit=10, $offset=0){
 			if ($this->request->getPost()) {
 				$user_id = $this->request->getPost("user_id");
