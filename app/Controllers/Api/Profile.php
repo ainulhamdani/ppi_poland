@@ -89,7 +89,7 @@ class Profile extends IonAuthController
 					$fileData['user_id'] = $this->request->user->user_id;
 					$fileData['name'] = $name;
 					$check = $studentPhotoModel->save($fileData);
-					return $this->response->setJSON(['success' => true]);
+					return $this->response->setJSON(['success' => true, 'message' => $name]);
 				} else {
 					return $this->response->setJSON(['error' => true]);
 				}
