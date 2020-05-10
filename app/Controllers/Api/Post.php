@@ -275,7 +275,7 @@ class Post extends IonAuthController
 	    $studentStatusModel = model('App\Models\StudentStatusModel');
 
 			$this->data['student'] = $studentModel
-			->withSelect(['student.*','users.fullname','users.nickname','users.email','student_photo.name as photo','university.name as university_name',
+			->withSelect(['student.*','users.fullname','users.nickname','users.email','student_photo.id as photo_id','student_photo.name as photo','university.name as university_name',
 										'student_status.description as student_status','location.parent_id as parent_id','location.name as location_name',
 										'parent_loc.name as parent_loc_name','user_follow.follow','followers.count as followers_count','following.count as following_count'])
 			->withJoin('users','id','user_id')
